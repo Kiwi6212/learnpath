@@ -20,9 +20,39 @@
     </div>
 
     <!-- Course content -->
-    <div id="course-content" class="dark:bg-dark-card bg-light-card rounded-xl p-8 border dark:border-dark-border border-light-border prose dark:prose-invert max-w-none
-        prose-headings:text-blue-400 prose-a:text-blue-400 prose-code:text-green-400
-        prose-pre:bg-[#0d1117] prose-pre:border prose-pre:border-[#30363d] prose-pre:rounded-lg">
+    <style>
+        .course-md h1, .course-md h2, .course-md h3 { color: #fff; margin-bottom: 0.75rem; margin-top: 1.5rem; font-weight: 700; }
+        .course-md h1 { font-size: 1.875rem; }
+        .course-md h2 { font-size: 1.5rem; }
+        .course-md h3 { font-size: 1.25rem; }
+        .course-md p { line-height: 1.7; margin-bottom: 1rem; }
+        .course-md ul, .course-md ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+        .course-md ul { list-style-type: disc; }
+        .course-md ol { list-style-type: decimal; }
+        .course-md li { margin-bottom: 0.25rem; }
+        .course-md code { background: #1e2530; padding: 2px 6px; border-radius: 4px; font-family: monospace; color: #79c0ff; font-size: 0.9em; }
+        .course-md pre code { background: #1e2530; padding: 1rem; border-radius: 8px; display: block; overflow-x: auto; color: #c9d1d9; }
+        .course-md pre { margin-bottom: 1rem; }
+        .course-md strong { color: #fff; }
+        .course-md hr { border-color: #30363d; margin: 1.5rem 0; }
+        .course-md table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+        .course-md th, .course-md td { padding: 8px 12px; border: 1px solid #30363d; }
+        .course-md th { background: #161b22; color: #fff; font-weight: 600; }
+        .course-md a { color: #58a6ff; text-decoration: underline; }
+        .course-md blockquote { border-left: 3px solid #30363d; padding-left: 1rem; color: #8b949e; margin-bottom: 1rem; }
+
+        /* Light mode overrides */
+        html:not(.dark) .course-md h1, html:not(.dark) .course-md h2, html:not(.dark) .course-md h3,
+        html:not(.dark) .course-md strong { color: #24292f; }
+        html:not(.dark) .course-md code { background: #f0f3f6; color: #0550ae; }
+        html:not(.dark) .course-md pre code { background: #f6f8fa; color: #24292f; }
+        html:not(.dark) .course-md th { background: #f6f8fa; color: #24292f; }
+        html:not(.dark) .course-md th, html:not(.dark) .course-md td { border-color: #d0d7de; }
+        html:not(.dark) .course-md hr { border-color: #d0d7de; }
+        html:not(.dark) .course-md blockquote { border-left-color: #d0d7de; color: #57606a; }
+        html:not(.dark) .course-md a { color: #0969da; }
+    </style>
+    <div id="course-content" class="course-md dark:bg-dark-card bg-light-card rounded-xl p-8 border dark:border-dark-border border-light-border max-w-none">
         {{ cours_html|safe }}
     </div>
 

@@ -29,7 +29,7 @@ def course_view(parcours_id, module_id, niveau):
 
     contenu = module.get("contenu", {}).get(f"niveau_{niveau}", {})
     cours_md = contenu.get("cours", "# Contenu à venir\n\nCe cours est en cours de rédaction.")
-    cours_html = markdown.markdown(cours_md, extensions=["fenced_code", "tables", "toc"])
+    cours_html = markdown.markdown(cours_md, extensions=["fenced_code", "tables", "nl2br"])
 
     total_xp = sum(p.xp_earned for p in UserProgress.query.all())
     level = total_xp // 500 + 1
