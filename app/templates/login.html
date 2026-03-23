@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LearnPath - Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] } } } }
+    </script>
+</head>
+<body class="bg-[#0d1117] text-[#c9d1d9] min-h-screen flex items-center justify-center font-sans">
+    <div class="w-full max-w-sm p-8">
+        <h1 class="text-3xl font-bold text-center mb-8">
+            <span class="text-blue-500">Learn</span><span class="text-white">Path</span>
+        </h1>
+        {% if error %}
+        <div class="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-lg mb-4 text-sm">
+            {{ error }}
+        </div>
+        {% endif %}
+        <form method="POST" class="space-y-4">
+            <input type="password" name="token" placeholder="Token d'accès" required autofocus
+                class="w-full px-4 py-3 bg-[#161b22] border border-[#30363d] rounded-lg focus:outline-none focus:border-blue-500 text-[#c9d1d9] placeholder-[#8b949e]">
+            <button type="submit"
+                class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">
+                Connexion
+            </button>
+        </form>
+    </div>
+</body>
+</html>

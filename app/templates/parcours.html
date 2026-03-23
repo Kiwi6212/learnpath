@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}LearnPath - {{ parcours.titre }}{% endblock %}
+{% block content %}
+
+<div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+        <a href="/roadmap" class="text-sm dark:text-dark-muted text-light-muted hover:text-blue-500 mb-4 inline-block">&larr; Roadmap</a>
+        <div class="flex items-center gap-4 mb-4">
+            <span class="text-4xl">{{ parcours.icon }}</span>
+            <div>
+                <h2 class="text-3xl font-bold dark:text-white text-gray-900">
+                    <span class="lang-fr">{{ parcours.titre }}</span>
+                    <span class="lang-en hidden">{{ parcours.titre_en|default(parcours.titre) }}</span>
+                </h2>
+                <p class="dark:text-dark-muted text-light-muted mt-1">
+                    <span class="lang-fr">{{ parcours.description }}</span>
+                    <span class="lang-en hidden">{{ parcours.description_en|default(parcours.description) }}</span>
+                </p>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <div class="flex-1 h-3 dark:bg-dark-border bg-gray-200 rounded-full overflow-hidden">
+                <div class="h-full rounded-full progress-bar" style="width: {{ global_pct }}%; background-color: {{ parcours.couleur }}"></div>
+            </div>
+            <span class="text-lg font-bold" style="color: {{ parcours.couleur }}">{{ global_pct }}%</span>
+        </div>
+    </div>
+
+    <!-- Etapes -->
+    {% for etape in etapes %}
+    <div class="mb-8">
+        <div class="flex items-center gap-3 mb-4">
+            <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold
+                {% if etape.unlocked %}text-white{% else %}dark:text-dark-muted text-light-muted dark:bg-dark-border bg-gray-200{% endif %}"
+                {% if etape.unlocked %}style="background-color: {{ parcours.couleur }}"{% endif %}>
+                {{ loop.index }}
+            </div>
+            <h3 class="text-xl font-semibold {% if not etape.unlocked %}dark:text-dark-muted text-light-muted{% endif %}">
+                <span class="lang-fr">{{ etape.titre }}</span>
+                <span class="lang-en hidden">{{ etape.titre_en }}</span>
+            </h3>
+            {% if not etape.unlocked %}
+            <span class="text-sm dark:text-dark-muted text-light-muted">🔒</span>
+            {% endif %}
+        </div>
+
+        <div class="space-y-3 ml-4">
+            {% for mod in etape.modules %}
+            <div class="dark:bg-dark-card bg-light-card rounded-xl p-5 border dark:border-dark-border border-light-border
+                {% if not etape.unlocked %}opacity-50{% endif %}">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">{{ mod.icon }}</span>
+                        <div>
+                            <h4 class="font-semibold dark:text-white text-gray-900">
+                                <span class="lang-fr">{{ mod.titre }}</span>
+                                <span class="lang-en hidden">{{ mod.titre_en|default(mod.titre) }}</span>
+                            </h4>
+                            <p class="text-sm dark:text-dark-muted text-light-muted">
+                                {{ mod.xp_earned }} / {{ mod.xp_total }} XP
+                                &middot; {{ mod.niveau_actuel }} / {{ mod.niveaux }} <span data-i18n="level">niveaux</span>
+                            </p>
+                        </div>
+                    </div>
+                    {% if etape.unlocked %}
+                    <a href="/parcours/{{ parcours.id }}/module/{{ mod.id }}"
+                       class="px-4 py-2 rounded-lg text-sm font-medium text-white transition-colors hover:opacity-90"
+                       style="background-color: {{ parcours.couleur }}">
+                        {% if mod.completed %}
+                        <span data-i18n="completed">Terminé</span> ✓
+                        {% elif mod.niveau_actuel > 0 %}
+                        <span data-i18n="continue_">Continuer</span>
+                        {% else %}
+                        <span data-i18n="start">Commencer</span>
+                        {% endif %}
+                    </a>
+                    {% else %}
+                    <span class="text-2xl">🔒</span>
+                    {% endif %}
+                </div>
+                <div class="mt-3 h-2 dark:bg-dark-border bg-gray-200 rounded-full overflow-hidden">
+                    {% set pct = (mod.niveau_actuel / mod.niveaux * 100)|int if mod.niveaux > 0 else 0 %}
+                    <div class="h-full rounded-full progress-bar" style="width: {{ pct }}%; background-color: {{ parcours.couleur }}"></div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const updateLangContent = () => {
+        document.querySelectorAll('.lang-fr').forEach(el => el.classList.toggle('hidden', currentLang !== 'fr'));
+        document.querySelectorAll('.lang-en').forEach(el => el.classList.toggle('hidden', currentLang !== 'en'));
+    };
+    updateLangContent();
+    const origSetLang3 = setLang;
+    setLang = (lang) => { origSetLang3(lang); updateLangContent(); };
+});
+</script>
+
+{% endblock %}

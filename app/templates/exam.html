@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+{% block title %}LearnPath - Examens{% endblock %}
+{% block content %}
+
+<div class="max-w-4xl mx-auto">
+
+{% if mode == 'list' %}
+    <!-- Exam selection page -->
+    <div class="mb-8">
+        <h2 class="text-3xl font-bold mb-2" data-i18n="exams">Examens blancs</h2>
+        <p class="dark:text-dark-muted text-light-muted">Testez vos connaissances avec des examens chronométrés</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
+        {% for cert in certifications %}
+        <div class="dark:bg-dark-card bg-light-card rounded-xl p-6 border dark:border-dark-border border-light-border">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="text-2xl">{{ cert.icon }}</span>
+                <div>
+                    <h3 class="text-lg font-semibold dark:text-white text-gray-900">{{ cert.titre }}</h3>
+                    <p class="text-sm dark:text-dark-muted text-light-muted">{{ cert.titre_en|default(cert.titre) }}</p>
+                </div>
+            </div>
+            {% if cert.exam %}
+            <div class="flex items-center gap-4 text-sm dark:text-dark-muted text-light-muted mb-4">
+                <span>⏱️ {{ cert.exam.duration_min }} min</span>
+                <span>📝 {{ cert.exam.questions|length }} questions</span>
+                <span>🎯 {{ cert.exam.passing_score }}%</span>
+            </div>
+            <a href="/exams/{{ cert.id }}/start" class="inline-block px-5 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-medium transition-colors text-sm">
+                <span data-i18n="start">Commencer</span>
+            </a>
+            {% else %}
+            <p class="text-sm dark:text-dark-muted text-light-muted italic">Examen bientôt disponible</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Exam History -->
+    {% if exam_results %}
+    <div class="mb-8">
+        <h3 class="text-2xl font-bold mb-4" data-i18n="history">Historique</h3>
+        <div class="space-y-3">
+            {% for r in exam_results %}
+            <div class="dark:bg-dark-card bg-light-card rounded-lg p-4 border dark:border-dark-border border-light-border flex items-center justify-between">
+                <div>
+                    <span class="font-medium">{{ r.exam_id }}</span>
+                    <span class="text-sm dark:text-dark-muted text-light-muted ml-2">{{ r.completed_at.strftime('%d/%m/%Y %H:%M') if r.completed_at }}</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span class="text-sm">{{ r.score }}/{{ r.total }} ({{ (r.score / r.total * 100)|int if r.total > 0 else 0 }}%)</span>
+                    <span class="text-sm font-medium {% if r.passed %}text-green-400{% else %}text-red-400{% endif %}">
+                        {% if r.passed %}✓{% else %}✗{% endif %}
+                    </span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+{% elif mode == 'exam' %}
+    <!-- Exam in progress -->
+    <div id="exam-header" class="mb-6">
+        <div class="flex items-center justify-between">
+            <h2 class="text-2xl font-bold">{{ cert.titre }}</h2>
+            <div class="flex items-center gap-4">
+                <span id="exam-timer" class="text-lg font-mono dark:text-yellow-400 text-yellow-600 font-bold">{{ duration }}:00</span>
+                <span id="exam-counter" class="text-sm dark:text-dark-muted text-light-muted">1/{{ questions|length }}</span>
+            </div>
+        </div>
+        <div class="mt-3 h-2 dark:bg-dark-border bg-gray-200 rounded-full overflow-hidden">
+            <div id="exam-progress" class="h-full bg-teal-500 rounded-full progress-bar" style="width: 0%"></div>
+        </div>
+    </div>
+
+    <div id="exam-area">
+        <div class="dark:bg-dark-card bg-light-card rounded-xl p-8 border dark:border-dark-border border-light-border">
+            <h3 id="exam-q-text" class="text-xl font-semibold mb-6"></h3>
+            <div id="exam-q-choices" class="space-y-3"></div>
+            <div class="flex justify-between mt-8">
+                <button id="exam-prev" onclick="examPrev()" class="px-5 py-2 dark:bg-dark-border bg-gray-200 rounded-lg font-medium hover:opacity-80 hidden">
+                    <span data-i18n="previous">Précédent</span>
+                </button>
+                <button id="exam-next" onclick="examNext()" class="px-5 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-medium ml-auto">
+                    <span data-i18n="next">Suivant</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Exam Results -->
+    <div id="exam-results" class="hidden">
+        <div class="dark:bg-dark-card bg-light-card rounded-xl p-8 border dark:border-dark-border border-light-border text-center mb-6">
+            <div id="exam-result-icon" class="text-6xl mb-4"></div>
+            <div id="exam-result-score" class="text-5xl font-bold mb-2"></div>
+            <div id="exam-result-pct" class="text-2xl mb-2"></div>
+            <div id="exam-result-status" class="text-xl font-semibold mb-4"></div>
+            <div id="exam-result-xp" class="dark:text-dark-muted text-light-muted mb-6"></div>
+            <a href="/exams" class="px-6 py-2.5 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700 inline-block">
+                Retour aux examens
+            </a>
+        </div>
+
+        <!-- Domain breakdown -->
+        <div id="exam-domains" class="dark:bg-dark-card bg-light-card rounded-xl p-6 border dark:border-dark-border border-light-border">
+            <h3 class="text-lg font-semibold mb-4" data-i18n="results_by_domain">Résultats par domaine</h3>
+            <div id="domain-list" class="space-y-3"></div>
+        </div>
+    </div>
+
+    <script>
+    const examQuestions = {{ questions|tojson }};
+    const examDuration = {{ duration }} * 60;
+    const passingScore = {{ passing_score }};
+    let examAnswers = new Array(examQuestions.length).fill(-1);
+    let examCurrent = 0;
+    let timeLeft = examDuration;
+    let timerInterval;
+    const examStart = Date.now();
+
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            const min = Math.floor(timeLeft / 60);
+            const sec = timeLeft % 60;
+            document.getElementById('exam-timer').textContent = min + ':' + String(sec).padStart(2, '0');
+            if (timeLeft <= 0) { clearInterval(timerInterval); finishExam(); }
+            if (timeLeft <= 300) document.getElementById('exam-timer').classList.add('text-red-400');
+        }, 1000);
+    }
+
+    function renderExamQ() {
+        const q = examQuestions[examCurrent];
+        document.getElementById('exam-counter').textContent = (examCurrent + 1) + '/' + examQuestions.length;
+        document.getElementById('exam-progress').style.width = ((examCurrent + 1) / examQuestions.length * 100) + '%';
+        document.getElementById('exam-q-text').textContent = q.question;
+
+        const choices = document.getElementById('exam-q-choices');
+        choices.innerHTML = '';
+        q.choices.forEach((c, i) => {
+            const btn = document.createElement('button');
+            const selected = examAnswers[examCurrent] === i;
+            btn.className = 'w-full text-left px-5 py-3.5 rounded-lg border transition-colors font-medium ' +
+                (selected ? 'border-teal-500 bg-teal-500/10 text-teal-400' : 'dark:border-dark-border border-light-border dark:bg-dark-bg bg-white hover:border-teal-500');
+            btn.textContent = c;
+            btn.onclick = () => { examAnswers[examCurrent] = i; renderExamQ(); };
+            choices.appendChild(btn);
+        });
+
+        document.getElementById('exam-prev').classList.toggle('hidden', examCurrent === 0);
+        const nextBtn = document.getElementById('exam-next');
+        if (examCurrent === examQuestions.length - 1) {
+            nextBtn.textContent = t('submit');
+            nextBtn.onclick = finishExam;
+        } else {
+            nextBtn.innerHTML = '<span data-i18n="next">' + t('next') + '</span>';
+            nextBtn.onclick = examNext;
+        }
+    }
+
+    function examPrev() { if (examCurrent > 0) { examCurrent--; renderExamQ(); } }
+    function examNext() { if (examCurrent < examQuestions.length - 1) { examCurrent++; renderExamQ(); } }
+
+    function finishExam() {
+        clearInterval(timerInterval);
+        const elapsed = Math.round((Date.now() - examStart) / 1000);
+
+        let score = 0;
+        const domainScores = {};
+        examQuestions.forEach((q, i) => {
+            const domain = q.domain || 'General';
+            if (!domainScores[domain]) domainScores[domain] = { correct: 0, total: 0 };
+            domainScores[domain].total++;
+            if (examAnswers[i] === q.correct) {
+                score++;
+                domainScores[domain].correct++;
+            }
+        });
+
+        const pct = Math.round(score / examQuestions.length * 100);
+        const passed = pct >= passingScore;
+
+        document.getElementById('exam-area').classList.add('hidden');
+        document.getElementById('exam-header').classList.add('hidden');
+        document.getElementById('exam-results').classList.remove('hidden');
+
+        document.getElementById('exam-result-icon').textContent = passed ? '🏆' : '📚';
+        document.getElementById('exam-result-score').textContent = score + '/' + examQuestions.length;
+        document.getElementById('exam-result-score').className = 'text-5xl font-bold mb-2 ' + (passed ? 'text-green-400' : 'text-red-400');
+        document.getElementById('exam-result-pct').textContent = pct + '%';
+        document.getElementById('exam-result-status').textContent = passed ? t('passed') : t('failed');
+        document.getElementById('exam-result-status').className = 'text-xl font-semibold mb-4 ' + (passed ? 'text-green-400' : 'text-red-400');
+        document.getElementById('exam-result-xp').textContent = '+' + (passed ? 200 : 50) + ' XP';
+
+        const domainList = document.getElementById('domain-list');
+        domainList.innerHTML = '';
+        for (const [domain, data] of Object.entries(domainScores)) {
+            const dpct = Math.round(data.correct / data.total * 100);
+            domainList.innerHTML += `
+                <div class="flex items-center justify-between">
+                    <span class="text-sm">${domain}</span>
+                    <div class="flex items-center gap-3">
+                        <div class="w-32 h-2 dark:bg-dark-border bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full rounded-full ${dpct >= passingScore ? 'bg-green-500' : 'bg-red-500'}" style="width: ${dpct}%"></div>
+                        </div>
+                        <span class="text-sm font-medium w-16 text-right">${data.correct}/${data.total} (${dpct}%)</span>
+                    </div>
+                </div>`;
+        }
+
+        fetch('/api/exams/{{ cert.id }}/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ score, total: examQuestions.length, duration_sec: elapsed, passing_score: passingScore })
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (examQuestions.length > 0) { renderExamQ(); startTimer(); }
+    });
+    </script>
+{% endif %}
+
+</div>
+
+{% endblock %}

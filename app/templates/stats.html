@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}LearnPath - Stats{% endblock %}
+{% block content %}
+
+<div class="max-w-4xl mx-auto">
+    <h2 class="text-3xl font-bold mb-8" data-i18n="stats">Mes stats</h2>
+
+    <!-- Top stats -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+        <div class="dark:bg-dark-card bg-light-card rounded-xl p-5 border dark:border-dark-border border-light-border text-center">
+            <div class="text-3xl font-bold text-blue-500">{{ level }}</div>
+            <div class="text-sm dark:text-dark-muted text-light-muted mt-1" data-i18n="level">Niveau</div>
+        </div>
+        <div class="dark:bg-dark-card bg-light-card rounded-xl p-5 border dark:border-dark-border border-light-border text-center">
+            <div class="text-3xl font-bold text-yellow-500">{{ total_xp }}</div>
+            <div class="text-sm dark:text-dark-muted text-light-muted mt-1" data-i18n="total_xp">XP Total</div>
+        </div>
+        <div class="dark:bg-dark-card bg-light-card rounded-xl p-5 border dark:border-dark-border border-light-border text-center">
+            <div class="text-3xl font-bold text-green-500">{{ total_completed }}/{{ total_modules }}</div>
+            <div class="text-sm dark:text-dark-muted text-light-muted mt-1" data-i18n="completed_modules">Modules complétés</div>
+        </div>
+        <div class="dark:bg-dark-card bg-light-card rounded-xl p-5 border dark:border-dark-border border-light-border text-center">
+            <div class="text-3xl font-bold text-orange-500">{{ streak }}</div>
+            <div class="text-sm dark:text-dark-muted text-light-muted mt-1">🔥 <span data-i18n="streak">Série</span> (<span data-i18n="days">jours</span>)</div>
+        </div>
+    </div>
+
+    <!-- Parcours progress -->
+    <div class="dark:bg-dark-card bg-light-card rounded-xl p-6 border dark:border-dark-border border-light-border mb-8">
+        <h3 class="text-xl font-semibold mb-6" data-i18n="global_progress">Progression globale</h3>
+        <div class="space-y-4">
+            {% for p in parcours_stats %}
+            <div>
+                <div class="flex items-center justify-between mb-1.5">
+                    <div class="flex items-center gap-2">
+                        <span>{{ p.icon }}</span>
+                        <span class="font-medium">
+                            <span class="lang-fr">{{ p.titre }}</span>
+                            <span class="lang-en hidden">{{ p.titre_en }}</span>
+                        </span>
+                    </div>
+                    <span class="text-sm dark:text-dark-muted text-light-muted">{{ p.completed }}/{{ p.total }} ({{ p.pct }}%)</span>
+                </div>
+                <div class="h-2.5 dark:bg-dark-border bg-gray-200 rounded-full overflow-hidden">
+                    <div class="h-full rounded-full progress-bar" style="width: {{ p.pct }}%; background-color: {{ p.couleur }}"></div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Exam results -->
+    {% if exam_results %}
+    <div class="dark:bg-dark-card bg-light-card rounded-xl p-6 border dark:border-dark-border border-light-border">
+        <h3 class="text-xl font-semibold mb-4" data-i18n="exams_passed">Examens réussis</h3>
+        <div class="space-y-3">
+            {% for r in exam_results %}
+            <div class="flex items-center justify-between p-3 rounded-lg dark:bg-dark-bg bg-white border dark:border-dark-border border-light-border">
+                <div>
+                    <span class="font-medium">{{ r.exam_id }}</span>
+                    <span class="text-sm dark:text-dark-muted text-light-muted ml-2">
+                        {{ r.completed_at.strftime('%d/%m/%Y') if r.completed_at }}
+                    </span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-sm">{{ (r.score / r.total * 100)|int if r.total > 0 else 0 }}%</span>
+                    <span class="{% if r.passed %}text-green-400{% else %}text-red-400{% endif %} font-bold">
+                        {% if r.passed %}✓{% else %}✗{% endif %}
+                    </span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const updateLangContent = () => {
+        document.querySelectorAll('.lang-fr').forEach(el => el.classList.toggle('hidden', currentLang !== 'fr'));
+        document.querySelectorAll('.lang-en').forEach(el => el.classList.toggle('hidden', currentLang !== 'en'));
+    };
+    updateLangContent();
+    const origSetLang5 = setLang;
+    setLang = (lang) => { origSetLang5(lang); updateLangContent(); };
+});
+</script>
+
+{% endblock %}

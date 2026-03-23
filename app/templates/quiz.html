@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% block title %}LearnPath - {{ module.titre }} - Quiz{% endblock %}
+{% block content %}
+
+<div class="max-w-3xl mx-auto">
+    <!-- Header -->
+    <div class="mb-6">
+        <a href="/parcours/{{ parcours.id }}/module/{{ module.id }}" class="text-sm dark:text-dark-muted text-light-muted hover:text-blue-500 mb-4 inline-block">
+            &larr; {{ module.titre }} - <span data-i18n="level">Niveau</span> {{ niveau }}
+        </a>
+        <div class="flex items-center gap-3">
+            <span class="text-2xl">✅</span>
+            <h2 class="text-2xl font-bold" data-i18n="quiz">Quiz</h2>
+        </div>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="mb-6">
+        <div class="flex justify-between text-sm dark:text-dark-muted text-light-muted mb-2">
+            <span id="q-counter">1/{{ questions|length }}</span>
+            <span id="q-score"></span>
+        </div>
+        <div class="h-2 dark:bg-dark-border bg-gray-200 rounded-full overflow-hidden">
+            <div id="q-progress" class="h-full bg-blue-500 rounded-full progress-bar" style="width: {{ (1 / (questions|length or 1) * 100)|round }}%"></div>
+        </div>
+    </div>
+
+    <!-- Question area -->
+    <div id="quiz-area">
+        <div id="question-card" class="dark:bg-dark-card bg-light-card rounded-xl p-8 border dark:border-dark-border border-light-border">
+            <h3 id="q-text" class="text-xl font-semibold mb-6"></h3>
+            <div id="q-choices" class="space-y-3"></div>
+            <div id="q-feedback" class="mt-6 hidden"></div>
+            <button id="q-next" class="mt-6 hidden px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+                onclick="nextQuestion()">
+                <span data-i18n="next">Suivant</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Results -->
+    <div id="quiz-results" class="hidden">
+        <div class="dark:bg-dark-card bg-light-card rounded-xl p-8 border dark:border-dark-border border-light-border text-center">
+            <h3 class="text-2xl font-bold mb-4" data-i18n="score">Score</h3>
+            <div id="result-score" class="text-5xl font-bold mb-4"></div>
+            <div id="result-xp" class="text-lg dark:text-dark-muted text-light-muted mb-6"></div>
+            <div class="flex gap-4 justify-center">
+                <button onclick="restartQuiz()" class="px-6 py-2.5 dark:bg-dark-border bg-gray-200 rounded-lg font-medium hover:opacity-80 transition-colors">
+                    <span data-i18n="retry">Recommencer</span>
+                </button>
+                <a href="/parcours/{{ parcours.id }}/module/{{ module.id }}" class="px-6 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                    <span data-i18n="continue_">Continuer</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const questions = {{ questions|tojson }};
+let currentQ = 0;
+let score = 0;
+let answered = false;
+
+function renderQuestion() {
+    if (currentQ >= questions.length) { showResults(); return; }
+    const q = questions[currentQ];
+    const isEn = currentLang === 'en';
+
+    document.getElementById('q-counter').textContent = (currentQ + 1) + '/' + questions.length;
+    document.getElementById('q-progress').style.width = ((currentQ + 1) / questions.length * 100) + '%';
+    document.getElementById('q-text').textContent = isEn && q.question_en ? q.question_en : q.question;
+
+    const choicesDiv = document.getElementById('q-choices');
+    choicesDiv.innerHTML = '';
+    const choices = isEn && q.choices_en ? q.choices_en : q.choices;
+    choices.forEach((c, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'w-full text-left px-5 py-3.5 rounded-lg border dark:border-dark-border border-light-border dark:bg-dark-bg bg-white hover:border-blue-500 transition-colors font-medium';
+        btn.textContent = c;
+        btn.onclick = () => selectAnswer(i);
+        choicesDiv.appendChild(btn);
+    });
+
+    document.getElementById('q-feedback').classList.add('hidden');
+    document.getElementById('q-next').classList.add('hidden');
+    answered = false;
+}
+
+function selectAnswer(idx) {
+    if (answered) return;
+    answered = true;
+    const q = questions[currentQ];
+    const isCorrect = idx === q.correct;
+    if (isCorrect) score++;
+
+    const buttons = document.getElementById('q-choices').children;
+    for (let i = 0; i < buttons.length; i++) {
+        buttons[i].disabled = true;
+        if (i === q.correct) {
+            buttons[i].className = 'w-full text-left px-5 py-3.5 rounded-lg border-2 border-green-500 bg-green-500/10 font-medium text-green-400';
+        } else if (i === idx && !isCorrect) {
+            buttons[i].className = 'w-full text-left px-5 py-3.5 rounded-lg border-2 border-red-500 bg-red-500/10 font-medium text-red-400';
+        } else {
+            buttons[i].className = 'w-full text-left px-5 py-3.5 rounded-lg border dark:border-dark-border border-light-border font-medium opacity-50';
+        }
+    }
+
+    const feedback = document.getElementById('q-feedback');
+    const isEn = currentLang === 'en';
+    const explanation = isEn && q.explanation_en ? q.explanation_en : q.explanation;
+    feedback.innerHTML = `
+        <div class="px-4 py-3 rounded-lg ${isCorrect ? 'bg-green-500/10 border border-green-500/30 text-green-400' : 'bg-red-500/10 border border-red-500/30 text-red-400'}">
+            <p class="font-semibold mb-1">${isCorrect ? t('correct') : t('incorrect')}</p>
+            ${explanation ? '<p class="text-sm dark:text-dark-muted text-light-muted">' + explanation + '</p>' : ''}
+        </div>`;
+    feedback.classList.remove('hidden');
+    document.getElementById('q-next').classList.remove('hidden');
+    document.getElementById('q-score').textContent = score + '/' + (currentQ + 1);
+}
+
+function nextQuestion() {
+    currentQ++;
+    renderQuestion();
+}
+
+function showResults() {
+    document.getElementById('quiz-area').classList.add('hidden');
+    document.getElementById('quiz-results').classList.remove('hidden');
+
+    const pct = Math.round(score / questions.length * 100);
+    const passed = pct >= 70;
+    document.getElementById('result-score').textContent = score + '/' + questions.length;
+    document.getElementById('result-score').className = 'text-5xl font-bold mb-4 ' + (passed ? 'text-green-400' : 'text-red-400');
+
+    const xp = passed ? score * 20 : 0;
+    document.getElementById('result-xp').textContent = (passed ? t('passed') : t('failed')) + ' — +' + xp + ' XP';
+
+    fetch('/api/parcours/{{ parcours.id }}/module/{{ module.id }}/quiz/{{ niveau }}/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ score, total: questions.length })
+    });
+}
+
+function restartQuiz() {
+    currentQ = 0; score = 0;
+    document.getElementById('quiz-area').classList.remove('hidden');
+    document.getElementById('quiz-results').classList.add('hidden');
+    document.getElementById('q-score').textContent = '';
+    renderQuestion();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (questions.length > 0) renderQuestion();
+    else document.getElementById('quiz-area').innerHTML = '<div class="dark:bg-dark-card bg-light-card rounded-xl p-8 border dark:border-dark-border border-light-border text-center dark:text-dark-muted text-light-muted">Aucune question disponible</div>';
+});
+</script>
+
+{% endblock %}

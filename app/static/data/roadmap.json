@@ -1,0 +1,1841 @@
+{
+  "parcours": [
+    {
+      "id": "reseaux",
+      "titre": "Réseaux",
+      "titre_en": "Networking",
+      "description": "Maîtrisez les fondamentaux des réseaux informatiques, des protocoles et de l'infrastructure.",
+      "description_en": "Master the fundamentals of computer networking, protocols, and infrastructure.",
+      "couleur": "#4A90D9",
+      "icon": "🌐",
+      "etapes": [
+        {
+          "id": "reseaux-bases",
+          "titre": "Les bases",
+          "titre_en": "Basics",
+          "modules": [
+            {
+              "id": "modele-osi",
+              "titre": "Modèle OSI",
+              "titre_en": "OSI Model",
+              "icon": "📶",
+              "niveaux": 5,
+              "xp_par_niveau": 100,
+              "contenu": {
+                "niveau_1": {
+                  "cours": "# Le Modèle OSI\n\n## Introduction\n\nLe modèle **OSI** (Open Systems Interconnection) est un modèle de référence créé par l'ISO (International Organization for Standardization) en 1984. Il décrit comment les données transitent à travers un réseau en décomposant la communication en **7 couches** distinctes.\n\n### Pourquoi le modèle OSI est-il important ?\n\n- Il fournit un **langage commun** pour décrire les fonctions réseau\n- Il permet de **diagnostiquer** les problèmes réseau couche par couche\n- Il aide à **comprendre** comment différents protocoles interagissent\n- C'est une base incontournable pour toute **certification réseau** (CCNA, Network+, etc.)\n\n---\n\n## Les 7 couches du modèle OSI\n\n### Couche 7 — Application (Application Layer)\n\n**Rôle** : Interface entre l'utilisateur et le réseau. C'est la couche la plus proche de l'utilisateur final.\n\n- **Protocoles** : HTTP, HTTPS, FTP, SMTP, DNS, POP3, IMAP, SNMP, Telnet, SSH\n- **Exemples** : Navigateur web, client email, transfert de fichiers\n\n### Couche 6 — Présentation (Presentation Layer)\n\n**Rôle** : Traduction, chiffrement et compression des données. Elle s'assure que les données sont dans un format compréhensible.\n\n- **Fonctions** : Chiffrement SSL/TLS, compression, encodage (ASCII, JPEG, MPEG)\n- **Exemples** : Conversion de formats de données, chiffrement HTTPS\n\n### Couche 5 — Session (Session Layer)\n\n**Rôle** : Établissement, gestion et terminaison des sessions de communication entre deux machines.\n\n- **Fonctions** : Ouverture/fermeture de sessions, synchronisation, gestion du dialogue\n- **Protocoles** : NetBIOS, RPC, PPTP\n- **Exemples** : Sessions de login, appels vidéo\n\n### Couche 4 — Transport (Transport Layer)\n\n**Rôle** : Transport fiable (ou non) des données de bout en bout. Gère la segmentation, le contrôle de flux et la correction d'erreurs.\n\n- **Protocoles** : TCP (fiable, orienté connexion), UDP (non fiable, sans connexion)\n- **Concepts** : Ports (80, 443, 22...), segmentation, numéros de séquence\n- **Exemples** : TCP pour le web, UDP pour le streaming vidéo\n\n### Couche 3 — Réseau (Network Layer)\n\n**Rôle** : Adressage logique et routage des paquets entre réseaux différents.\n\n- **Protocoles** : IP (IPv4, IPv6), ICMP, ARP, OSPF, BGP\n- **Équipements** : Routeurs, routeurs de couche 3\n- **Exemples** : Adressage IP, routage entre sous-réseaux\n\n### Couche 2 — Liaison de données (Data Link Layer)\n\n**Rôle** : Transfert fiable de données entre deux nœuds directement connectés. Gère l'adressage physique (MAC).\n\n- **Protocoles** : Ethernet, Wi-Fi (802.11), PPP, ARP\n- **Équipements** : Switches, ponts (bridges)\n- **Concepts** : Adresses MAC, trames (frames), détection d'erreurs (CRC)\n\n### Couche 1 — Physique (Physical Layer)\n\n**Rôle** : Transmission des bits bruts sur le support physique. C'est la couche matérielle.\n\n- **Support** : Câbles cuivre (Ethernet RJ45), fibre optique, ondes radio (Wi-Fi)\n- **Équipements** : Hubs, répéteurs, câbles, connecteurs\n- **Concepts** : Débit binaire, signaux électriques/optiques, topologie physique\n\n---\n\n## Mnémonique pour retenir les couches\n\nDe la couche 7 à la couche 1 : **A**ll **P**eople **S**eem **T**o **N**eed **D**ata **P**rocessing\n\n| Initiale | Couche |\n|----------|--------|\n| **A** | Application |\n| **P** | Présentation |\n| **S** | Session |\n| **T** | Transport |\n| **N** | Network (Réseau) |\n| **D** | Data Link (Liaison) |\n| **P** | Physical (Physique) |\n\nEn français, de la couche 1 à 7 : **P**our **L**e **R**éseau, **T**out **S**e **P**asse **A**pplicativement\n\n---\n\n## Encapsulation des données\n\nQuand des données traversent les couches, chaque couche ajoute un en-tête (header) : c'est l'**encapsulation**.\n\n```\n┌─────────────────────────────────────────────────┐\n│ Couche 7-5 : Données (Data)                     │\n├─────────────────────────────────────────────────┤\n│ Couche 4 : Segment [En-tête TCP/UDP | Données]  │\n├─────────────────────────────────────────────────┤\n│ Couche 3 : Paquet  [En-tête IP | Segment]        │\n├─────────────────────────────────────────────────┤\n│ Couche 2 : Trame   [En-tête MAC | Paquet | FCS]  │\n├─────────────────────────────────────────────────┤\n│ Couche 1 : Bits    [010110011101001...]           │\n└─────────────────────────────────────────────────┘\n```\n\n**Processus d'encapsulation (envoi)** :\n1. L'application génère des **données**\n2. La couche Transport ajoute un en-tête TCP/UDP → **segment**\n3. La couche Réseau ajoute un en-tête IP → **paquet**\n4. La couche Liaison ajoute un en-tête MAC + FCS → **trame**\n5. La couche Physique convertit en **bits** et transmet\n\n---\n\n## Tableau récapitulatif\n\n| # | Couche | Unité de données | Protocoles | Équipements |\n|---|--------|-------------------|------------|-------------|\n| 7 | Application | Données | HTTP, DNS, FTP, SMTP | - |\n| 6 | Présentation | Données | SSL/TLS, JPEG, ASCII | - |\n| 5 | Session | Données | NetBIOS, RPC | - |\n| 4 | Transport | Segment | TCP, UDP | - |\n| 3 | Réseau | Paquet | IP, ICMP, OSPF | Routeur |\n| 2 | Liaison | Trame | Ethernet, Wi-Fi | Switch |\n| 1 | Physique | Bit | - | Hub, câbles |\n\n---\n\n## Points clés à retenir\n\n- Le modèle OSI comporte **7 couches**, de la couche Physique (1) à la couche Application (7)\n- Chaque couche a un **rôle spécifique** et communique avec les couches adjacentes\n- L'**encapsulation** ajoute des en-têtes à chaque couche lors de l'envoi\n- La **désencapsulation** retire les en-têtes à chaque couche lors de la réception\n- En pratique, le modèle **TCP/IP** (4 couches) est plus utilisé, mais l'OSI reste la **référence théorique**",
+                  "quiz": [
+                    {
+                      "question": "Combien de couches compte le modèle OSI ?",
+                      "question_en": "How many layers does the OSI model have?",
+                      "choices": ["5", "6", "7", "8"],
+                      "choices_en": ["5", "6", "7", "8"],
+                      "correct": 2,
+                      "explanation": "Le modèle OSI comporte exactement 7 couches, de la couche Physique (1) à la couche Application (7). Ne pas confondre avec le modèle TCP/IP qui en comporte 4.",
+                      "explanation_en": "The OSI model has exactly 7 layers, from the Physical layer (1) to the Application layer (7). Do not confuse with the TCP/IP model which has 4 layers."
+                    },
+                    {
+                      "question": "Quelle couche gère l'adressage IP ?",
+                      "question_en": "Which layer handles IP addressing?",
+                      "choices": ["Couche 2 - Liaison", "Couche 3 - Réseau", "Couche 4 - Transport", "Couche 7 - Application"],
+                      "choices_en": ["Layer 2 - Data Link", "Layer 3 - Network", "Layer 4 - Transport", "Layer 7 - Application"],
+                      "correct": 1,
+                      "explanation": "La couche 3 (Réseau) est responsable de l'adressage logique IP et du routage des paquets entre réseaux.",
+                      "explanation_en": "Layer 3 (Network) is responsible for logical IP addressing and routing packets between networks."
+                    },
+                    {
+                      "question": "Quel protocole opère en couche 4 ?",
+                      "question_en": "Which protocol operates at layer 4?",
+                      "choices": ["HTTP", "IP", "TCP", "Ethernet"],
+                      "choices_en": ["HTTP", "IP", "TCP", "Ethernet"],
+                      "correct": 2,
+                      "explanation": "TCP (Transmission Control Protocol) opère en couche 4 (Transport). HTTP est en couche 7, IP en couche 3, et Ethernet en couche 2.",
+                      "explanation_en": "TCP (Transmission Control Protocol) operates at layer 4 (Transport). HTTP is at layer 7, IP at layer 3, and Ethernet at layer 2."
+                    },
+                    {
+                      "question": "Que signifie OSI ?",
+                      "question_en": "What does OSI stand for?",
+                      "choices": ["Open System Interface", "Open Systems Interconnection", "Operating System Integration", "Open Standard Internet"],
+                      "choices_en": ["Open System Interface", "Open Systems Interconnection", "Operating System Integration", "Open Standard Internet"],
+                      "correct": 1,
+                      "explanation": "OSI signifie Open Systems Interconnection (Interconnexion de systèmes ouverts). Ce modèle a été créé par l'ISO en 1984.",
+                      "explanation_en": "OSI stands for Open Systems Interconnection. This model was created by the ISO in 1984."
+                    },
+                    {
+                      "question": "Quelle couche est responsable du chiffrement ?",
+                      "question_en": "Which layer is responsible for encryption?",
+                      "choices": ["Couche 4 - Transport", "Couche 5 - Session", "Couche 6 - Présentation", "Couche 7 - Application"],
+                      "choices_en": ["Layer 4 - Transport", "Layer 5 - Session", "Layer 6 - Presentation", "Layer 7 - Application"],
+                      "correct": 2,
+                      "explanation": "La couche 6 (Présentation) est responsable du chiffrement, de la compression et de la traduction des données.",
+                      "explanation_en": "Layer 6 (Presentation) is responsible for encryption, compression, and data translation."
+                    }
+                  ],
+                  "flashcards": [
+                    {
+                      "id": "osi-1-1",
+                      "recto": "Couche 1 du modèle OSI ?",
+                      "recto_en": "OSI Model Layer 1?",
+                      "verso": "Couche Physique — Transmission des bits bruts sur le support physique (câbles, signaux électriques, fibre optique). Équipements : hubs, répéteurs.",
+                      "verso_en": "Physical Layer — Transmission of raw bits over physical media (cables, electrical signals, fiber optics). Devices: hubs, repeaters."
+                    },
+                    {
+                      "id": "osi-1-2",
+                      "recto": "Couche 2 du modèle OSI ?",
+                      "recto_en": "OSI Model Layer 2?",
+                      "verso": "Couche Liaison de données — Adressage MAC, détection d'erreurs, transfert de trames entre nœuds directement connectés. Équipements : switches, ponts.",
+                      "verso_en": "Data Link Layer — MAC addressing, error detection, frame transfer between directly connected nodes. Devices: switches, bridges."
+                    },
+                    {
+                      "id": "osi-1-3",
+                      "recto": "Couche 3 du modèle OSI ?",
+                      "recto_en": "OSI Model Layer 3?",
+                      "verso": "Couche Réseau — Adressage logique (IP) et routage des paquets entre réseaux différents. Protocoles : IP, ICMP, OSPF. Équipements : routeurs.",
+                      "verso_en": "Network Layer — Logical addressing (IP) and packet routing between different networks. Protocols: IP, ICMP, OSPF. Devices: routers."
+                    },
+                    {
+                      "id": "osi-1-4",
+                      "recto": "Couche 4 du modèle OSI ?",
+                      "recto_en": "OSI Model Layer 4?",
+                      "verso": "Couche Transport — Transport fiable ou non des données de bout en bout. Protocoles : TCP (fiable, orienté connexion) et UDP (non fiable, sans connexion). Utilise les ports.",
+                      "verso_en": "Transport Layer — Reliable or unreliable end-to-end data transport. Protocols: TCP (reliable, connection-oriented) and UDP (unreliable, connectionless). Uses ports."
+                    },
+                    {
+                      "id": "osi-1-5",
+                      "recto": "Couche 5 du modèle OSI ?",
+                      "recto_en": "OSI Model Layer 5?",
+                      "verso": "Couche Session — Établissement, gestion et terminaison des sessions de communication. Gère le dialogue entre applications. Protocoles : NetBIOS, RPC.",
+                      "verso_en": "Session Layer — Establishment, management, and termination of communication sessions. Manages dialogue between applications. Protocols: NetBIOS, RPC."
+                    },
+                    {
+                      "id": "osi-1-6",
+                      "recto": "Couche 6 du modèle OSI ?",
+                      "recto_en": "OSI Model Layer 6?",
+                      "verso": "Couche Présentation — Chiffrement, compression et traduction des données. Assure que les données sont dans un format compréhensible. Ex : SSL/TLS, JPEG, ASCII.",
+                      "verso_en": "Presentation Layer — Encryption, compression, and data translation. Ensures data is in an understandable format. Ex: SSL/TLS, JPEG, ASCII."
+                    },
+                    {
+                      "id": "osi-1-7",
+                      "recto": "Couche 7 du modèle OSI ?",
+                      "recto_en": "OSI Model Layer 7?",
+                      "verso": "Couche Application — Interface entre l'utilisateur et le réseau. Protocoles : HTTP, HTTPS, FTP, SMTP, DNS, SSH. C'est la couche la plus proche de l'utilisateur.",
+                      "verso_en": "Application Layer — Interface between the user and the network. Protocols: HTTP, HTTPS, FTP, SMTP, DNS, SSH. The layer closest to the user."
+                    },
+                    {
+                      "id": "osi-1-8",
+                      "recto": "Qu'est-ce que TCP ?",
+                      "recto_en": "What is TCP?",
+                      "verso": "Transmission Control Protocol — Protocole de couche 4 (Transport). Fiable, orienté connexion (three-way handshake : SYN, SYN-ACK, ACK). Garantit la livraison ordonnée des données.",
+                      "verso_en": "Transmission Control Protocol — Layer 4 (Transport) protocol. Reliable, connection-oriented (three-way handshake: SYN, SYN-ACK, ACK). Guarantees ordered data delivery."
+                    },
+                    {
+                      "id": "osi-1-9",
+                      "recto": "Qu'est-ce que UDP ?",
+                      "recto_en": "What is UDP?",
+                      "verso": "User Datagram Protocol — Protocole de couche 4 (Transport). Non fiable, sans connexion. Plus rapide que TCP car pas de vérification. Utilisé pour le streaming, DNS, jeux en ligne.",
+                      "verso_en": "User Datagram Protocol — Layer 4 (Transport) protocol. Unreliable, connectionless. Faster than TCP due to no verification. Used for streaming, DNS, online gaming."
+                    },
+                    {
+                      "id": "osi-1-10",
+                      "recto": "À quelle couche OSI opère un switch ?",
+                      "recto_en": "At which OSI layer does a switch operate?",
+                      "verso": "Un switch opère en couche 2 (Liaison de données). Il utilise les adresses MAC pour transférer les trames au bon port. Certains switches managés peuvent aussi opérer en couche 3.",
+                      "verso_en": "A switch operates at layer 2 (Data Link). It uses MAC addresses to forward frames to the correct port. Some managed switches can also operate at layer 3."
+                    }
+                  ],
+                  "lab": {
+                    "titre": "Explorer les couches OSI",
+                    "titre_en": "Exploring OSI Layers",
+                    "instructions": "# TP : Explorer les couches OSI en pratique\n\nDans ce lab, nous allons utiliser des commandes réseau courantes pour observer les différentes couches du modèle OSI en action.\n\nChaque commande vous permettra de visualiser le fonctionnement d'une ou plusieurs couches.\n\n## Objectifs\n- Tester la connectivité réseau (couche 3)\n- Tracer le chemin des paquets à travers les routeurs\n- Observer les connexions actives (couche 4)\n- Résoudre un nom de domaine (couche 7/3)",
+                    "instructions_en": "# Lab: Exploring OSI Layers in Practice\n\nIn this lab, we will use common network commands to observe the different layers of the OSI model in action.\n\nEach command will allow you to visualize the operation of one or more layers.\n\n## Objectives\n- Test network connectivity (layer 3)\n- Trace the path of packets through routers\n- Observe active connections (layer 4)\n- Resolve a domain name (layer 7/3)",
+                    "commands": [
+                      {
+                        "command": "ping 8.8.8.8",
+                        "hint": "Teste la connectivité réseau (couche 3) en envoyant des paquets ICMP au serveur DNS de Google.",
+                        "hint_en": "Tests network connectivity (layer 3) by sending ICMP packets to Google's DNS server.",
+                        "expected_output": "Réponse de 8.8.8.8 : octets=32 temps=XXms TTL=XXX (plusieurs lignes de réponses PING)"
+                      },
+                      {
+                        "command": "traceroute 8.8.8.8",
+                        "hint": "Trace le chemin des paquets vers la destination en affichant chaque routeur traversé (couche 3). Sur Windows, utilisez 'tracert' à la place.",
+                        "hint_en": "Traces the path of packets to the destination, showing each router crossed (layer 3). On Windows, use 'tracert' instead.",
+                        "expected_output": "Liste numérotée des sauts (hops) avec les adresses IP et temps de réponse de chaque routeur intermédiaire."
+                      },
+                      {
+                        "command": "netstat -an",
+                        "hint": "Affiche toutes les connexions réseau actives et les ports en écoute (couche 4 - Transport). Montre les protocoles TCP/UDP, les adresses et les états.",
+                        "hint_en": "Displays all active network connections and listening ports (layer 4 - Transport). Shows TCP/UDP protocols, addresses, and states.",
+                        "expected_output": "Tableau avec colonnes : Proto, Local Address, Foreign Address, State. Affiche les connexions ESTABLISHED, LISTENING, TIME_WAIT, etc."
+                      },
+                      {
+                        "command": "nslookup google.com",
+                        "hint": "Interroge le serveur DNS pour résoudre un nom de domaine en adresse IP (couche 7 - Application via le protocole DNS).",
+                        "hint_en": "Queries the DNS server to resolve a domain name to an IP address (layer 7 - Application via DNS protocol).",
+                        "expected_output": "Affiche le serveur DNS utilisé et les adresses IP associées au domaine google.com."
+                      }
+                    ]
+                  }
+                },
+                "niveau_2": {
+                  "cours": "# Modèle OSI — Niveau 2 : Approfondissement\n\n## Les PDU (Protocol Data Units)\n\nChaque couche du modèle OSI utilise une unité de données spécifique :\n\n| Couche | PDU | Description |\n|--------|-----|-------------|\n| 7-5 | Data | Données brutes de l'application |\n| 4 | Segment (TCP) / Datagramme (UDP) | Données + en-tête transport |\n| 3 | Paquet (Packet) | Segment + en-tête IP |\n| 2 | Trame (Frame) | Paquet + en-tête MAC + FCS |\n| 1 | Bit | Signaux physiques |\n\n## Communication inter-couches\n\nLes couches communiquent via des **SAP** (Service Access Points). Chaque couche fournit des services à la couche supérieure et utilise les services de la couche inférieure.\n\n## Encapsulation et désencapsulation détaillées\n\nL'encapsulation est le processus d'ajout d'en-têtes à chaque couche. La désencapsulation est le processus inverse côté réception."
+                },
+                "niveau_3": {
+                  "cours": "# Modèle OSI — Niveau 3 : Comparaison OSI vs TCP/IP\n\n## Le modèle TCP/IP (4 couches)\n\nLe modèle TCP/IP est le modèle pratique utilisé sur Internet :\n\n| TCP/IP | OSI équivalent |\n|--------|----------------|\n| Application | Couches 7, 6, 5 |\n| Transport | Couche 4 |\n| Internet | Couche 3 |\n| Accès réseau | Couches 2, 1 |\n\n## Pourquoi deux modèles ?\n\n- **OSI** : Modèle théorique de référence, excellent pour l'apprentissage\n- **TCP/IP** : Modèle pratique, implémenté dans les systèmes réels\n\n## Analyse de trames avec Wireshark\n\nWireshark permet de capturer et analyser le trafic réseau couche par couche."
+                },
+                "niveau_4": {
+                  "cours": "# Modèle OSI — Niveau 4 : Dépannage par couche\n\n## Méthodologie de dépannage OSI\n\nLe modèle OSI fournit une approche structurée pour diagnostiquer les problèmes réseau.\n\n### Approche Bottom-Up (de la couche 1 vers la 7)\n\n1. **Couche 1** : Le câble est-il branché ? Le lien est-il actif ?\n2. **Couche 2** : Les adresses MAC sont-elles correctes ? Le switch fonctionne-t-il ?\n3. **Couche 3** : L'adresse IP est-elle correcte ? Le routage fonctionne-t-il ?\n4. **Couche 4** : Le port est-il ouvert ? Le service écoute-t-il ?\n5. **Couches 5-7** : L'application répond-elle correctement ?\n\n### Commandes utiles par couche\n\n- Couche 1 : `ethtool`, vérifier les LEDs\n- Couche 2 : `arp -a`, `show mac-address-table`\n- Couche 3 : `ping`, `traceroute`, `ip route`\n- Couche 4 : `netstat`, `ss`, `telnet host port`\n- Couche 7 : `curl`, `nslookup`, `dig`"
+                },
+                "niveau_5": {
+                  "cours": "# Modèle OSI — Niveau 5 : Cas pratiques et certifications\n\n## Questions types en certification\n\nLe modèle OSI est omniprésent dans les examens CCNA, Network+ et Security+.\n\n### Scénarios fréquents\n\n- Identifier la couche concernée par un problème donné\n- Associer un protocole à sa couche OSI\n- Comprendre l'ordre d'encapsulation/désencapsulation\n- Différencier les PDU par couche\n\n## Protocoles avancés et leurs couches\n\n| Protocole | Couche | Détail |\n|-----------|--------|--------|\n| TLS 1.3 | 5-6 | Chiffrement moderne |\n| BGP | 7 (utilise TCP/3) | Routage inter-AS |\n| MPLS | 2.5 | Entre couche 2 et 3 |\n| IPsec | 3 | VPN et chiffrement |\n| QUIC | 4 | Transport moderne (HTTP/3) |\n\n## Conclusion\n\nLe modèle OSI reste le fondement de toute compréhension réseau. Maîtriser ses 7 couches, c'est disposer d'un cadre mental puissant pour analyser, concevoir et dépanner n'importe quel réseau."
+                }
+              }
+            },
+            {
+              "id": "tcp-ip",
+              "titre": "TCP/IP",
+              "titre_en": "TCP/IP",
+              "icon": "🔗",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "adressage-ip",
+              "titre": "Adressage IP",
+              "titre_en": "IP Addressing",
+              "icon": "🔢",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "masques-sous-reseau",
+              "titre": "Masques de sous-réseau",
+              "titre_en": "Subnet Masks",
+              "icon": "🎭",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            }
+          ]
+        },
+        {
+          "id": "reseaux-protocoles",
+          "titre": "Protocoles",
+          "titre_en": "Protocols",
+          "modules": [
+            {
+              "id": "dns",
+              "titre": "DNS",
+              "titre_en": "DNS",
+              "icon": "📖",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "dhcp",
+              "titre": "DHCP",
+              "titre_en": "DHCP",
+              "icon": "📋",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "http-https",
+              "titre": "HTTP/HTTPS",
+              "titre_en": "HTTP/HTTPS",
+              "icon": "🌍",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "ssh",
+              "titre": "SSH",
+              "titre_en": "SSH",
+              "icon": "🔑",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "ftp",
+              "titre": "FTP",
+              "titre_en": "FTP",
+              "icon": "📁",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "smtp",
+              "titre": "SMTP",
+              "titre_en": "SMTP",
+              "icon": "📧",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            }
+          ]
+        },
+        {
+          "id": "reseaux-infrastructure",
+          "titre": "Infrastructure",
+          "titre_en": "Infrastructure",
+          "modules": [
+            {
+              "id": "routage",
+              "titre": "Routage",
+              "titre_en": "Routing",
+              "icon": "🔀",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "switching",
+              "titre": "Switching",
+              "titre_en": "Switching",
+              "icon": "🔌",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "vlans",
+              "titre": "VLANs",
+              "titre_en": "VLANs",
+              "icon": "🏷️",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "pare-feu",
+              "titre": "Pare-feu",
+              "titre_en": "Firewall",
+              "icon": "🧱",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "vpn",
+              "titre": "VPN",
+              "titre_en": "VPN",
+              "icon": "🛡️",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "systemes",
+      "titre": "Systèmes",
+      "titre_en": "Systems",
+      "description": "Apprenez à administrer les systèmes d'exploitation et les environnements virtualisés.",
+      "description_en": "Learn to administer operating systems and virtualized environments.",
+      "couleur": "#27AE60",
+      "icon": "🖥️",
+      "etapes": [
+        {
+          "id": "systemes-linux",
+          "titre": "Linux",
+          "titre_en": "Linux",
+          "modules": [
+            {
+              "id": "linux-commandes-base",
+              "titre": "Commandes de base",
+              "titre_en": "Basic Commands",
+              "icon": "⌨️",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "linux-gestion-fichiers",
+              "titre": "Gestion des fichiers",
+              "titre_en": "File Management",
+              "icon": "📂",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "linux-permissions",
+              "titre": "Permissions",
+              "titre_en": "Permissions",
+              "icon": "🔐",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "linux-systemd",
+              "titre": "Services systemd",
+              "titre_en": "systemd Services",
+              "icon": "⚙️",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            }
+          ]
+        },
+        {
+          "id": "systemes-windows-server",
+          "titre": "Windows Server",
+          "titre_en": "Windows Server",
+          "modules": [
+            {
+              "id": "active-directory",
+              "titre": "Active Directory",
+              "titre_en": "Active Directory",
+              "icon": "🏢",
+              "niveaux": 5,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "gpo",
+              "titre": "GPO",
+              "titre_en": "Group Policy Objects",
+              "icon": "📜",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "dns-dhcp-windows",
+              "titre": "DNS/DHCP Windows",
+              "titre_en": "Windows DNS/DHCP",
+              "icon": "🖧",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "rds",
+              "titre": "RDS",
+              "titre_en": "Remote Desktop Services",
+              "icon": "🖥️",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            }
+          ]
+        },
+        {
+          "id": "systemes-virtualisation",
+          "titre": "Virtualisation",
+          "titre_en": "Virtualization",
+          "modules": [
+            {
+              "id": "vmware-esxi",
+              "titre": "VMware ESXi",
+              "titre_en": "VMware ESXi",
+              "icon": "🖲️",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "hyper-v",
+              "titre": "Hyper-V",
+              "titre_en": "Hyper-V",
+              "icon": "💠",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "docker",
+              "titre": "Docker",
+              "titre_en": "Docker",
+              "icon": "🐳",
+              "niveaux": 5,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "kubernetes-bases",
+              "titre": "Kubernetes bases",
+              "titre_en": "Kubernetes Basics",
+              "icon": "☸️",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cybersecurite",
+      "titre": "Cybersécurité",
+      "titre_en": "Cybersecurity",
+      "description": "Découvrez les principes de la sécurité informatique, de la défense à l'offensive.",
+      "description_en": "Discover the principles of information security, from defense to offense.",
+      "couleur": "#E74C3C",
+      "icon": "🔒",
+      "etapes": [
+        {
+          "id": "cyber-fondamentaux",
+          "titre": "Fondamentaux",
+          "titre_en": "Fundamentals",
+          "modules": [
+            {
+              "id": "cia-triad",
+              "titre": "CIA Triad",
+              "titre_en": "CIA Triad",
+              "icon": "🔺",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "cryptographie",
+              "titre": "Cryptographie",
+              "titre_en": "Cryptography",
+              "icon": "🔏",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "pki",
+              "titre": "PKI",
+              "titre_en": "Public Key Infrastructure",
+              "icon": "📜",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "authentification",
+              "titre": "Authentification",
+              "titre_en": "Authentication",
+              "icon": "🪪",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            }
+          ]
+        },
+        {
+          "id": "cyber-defense",
+          "titre": "Défense",
+          "titre_en": "Defense",
+          "modules": [
+            {
+              "id": "pare-feu-securite",
+              "titre": "Pare-feu",
+              "titre_en": "Firewall",
+              "icon": "🧱",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "ids-ips",
+              "titre": "IDS/IPS",
+              "titre_en": "IDS/IPS",
+              "icon": "🚨",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "siem",
+              "titre": "SIEM",
+              "titre_en": "SIEM",
+              "icon": "📊",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "edr",
+              "titre": "EDR",
+              "titre_en": "Endpoint Detection & Response",
+              "icon": "🛡️",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "hardening",
+              "titre": "Hardening",
+              "titre_en": "Hardening",
+              "icon": "🔧",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            }
+          ]
+        },
+        {
+          "id": "cyber-attaque",
+          "titre": "Attaque",
+          "titre_en": "Offensive",
+          "modules": [
+            {
+              "id": "owasp-top-10",
+              "titre": "OWASP Top 10",
+              "titre_en": "OWASP Top 10",
+              "icon": "🐝",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "pentest-bases",
+              "titre": "Pentest bases",
+              "titre_en": "Pentest Basics",
+              "icon": "🎯",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "nmap",
+              "titre": "Nmap",
+              "titre_en": "Nmap",
+              "icon": "🗺️",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "metasploit",
+              "titre": "Metasploit",
+              "titre_en": "Metasploit",
+              "icon": "💉",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            }
+          ]
+        },
+        {
+          "id": "cyber-forensics",
+          "titre": "Forensics",
+          "titre_en": "Forensics",
+          "modules": [
+            {
+              "id": "analyse-logs",
+              "titre": "Analyse de logs",
+              "titre_en": "Log Analysis",
+              "icon": "🔍",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "incident-response",
+              "titre": "Incident Response",
+              "titre_en": "Incident Response",
+              "icon": "🚒",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "malware-analysis",
+              "titre": "Malware Analysis",
+              "titre_en": "Malware Analysis",
+              "icon": "🦠",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "langages",
+      "titre": "Langages",
+      "titre_en": "Programming",
+      "description": "Apprenez les langages de programmation essentiels pour l'IT et la cybersécurité.",
+      "description_en": "Learn essential programming languages for IT and cybersecurity.",
+      "couleur": "#9B59B6",
+      "icon": "💻",
+      "etapes": [
+        {
+          "id": "langages-scripting",
+          "titre": "Scripting",
+          "titre_en": "Scripting",
+          "modules": [
+            {
+              "id": "python-bases",
+              "titre": "Python bases",
+              "titre_en": "Python Basics",
+              "icon": "🐍",
+              "niveaux": 5,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "bash-shell",
+              "titre": "Bash/Shell",
+              "titre_en": "Bash/Shell",
+              "icon": "🐚",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "powershell",
+              "titre": "PowerShell",
+              "titre_en": "PowerShell",
+              "icon": "⚡",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            }
+          ]
+        },
+        {
+          "id": "langages-python-avance",
+          "titre": "Python avancé",
+          "titre_en": "Advanced Python",
+          "modules": [
+            {
+              "id": "python-librairies-reseau",
+              "titre": "Librairies réseau",
+              "titre_en": "Network Libraries",
+              "icon": "📡",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "python-automatisation",
+              "titre": "Automatisation",
+              "titre_en": "Automation",
+              "icon": "🤖",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "python-scripts-securite",
+              "titre": "Scripts sécurité",
+              "titre_en": "Security Scripts",
+              "icon": "🔐",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            }
+          ]
+        },
+        {
+          "id": "langages-web",
+          "titre": "Web",
+          "titre_en": "Web",
+          "modules": [
+            {
+              "id": "html-css",
+              "titre": "HTML/CSS bases",
+              "titre_en": "HTML/CSS Basics",
+              "icon": "🎨",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "javascript-bases",
+              "titre": "JavaScript bases",
+              "titre_en": "JavaScript Basics",
+              "icon": "📜",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "sql",
+              "titre": "SQL",
+              "titre_en": "SQL",
+              "icon": "🗄️",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            }
+          ]
+        },
+        {
+          "id": "langages-devops",
+          "titre": "DevOps",
+          "titre_en": "DevOps",
+          "modules": [
+            {
+              "id": "git",
+              "titre": "Git",
+              "titre_en": "Git",
+              "icon": "🌿",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "ci-cd",
+              "titre": "CI/CD",
+              "titre_en": "CI/CD",
+              "icon": "🔄",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "docker-devops",
+              "titre": "Docker",
+              "titre_en": "Docker",
+              "icon": "🐳",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "iac",
+              "titre": "Infrastructure as Code",
+              "titre_en": "Infrastructure as Code",
+              "icon": "📝",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cloud",
+      "titre": "Cloud",
+      "titre_en": "Cloud",
+      "description": "Maîtrisez les services cloud et préparez les certifications associées.",
+      "description_en": "Master cloud services and prepare for associated certifications.",
+      "couleur": "#F39C12",
+      "icon": "☁️",
+      "etapes": [
+        {
+          "id": "cloud-fondamentaux",
+          "titre": "Fondamentaux Cloud",
+          "titre_en": "Cloud Fundamentals",
+          "modules": [
+            {
+              "id": "modeles-cloud",
+              "titre": "Modèles IaaS/PaaS/SaaS",
+              "titre_en": "IaaS/PaaS/SaaS Models",
+              "icon": "📊",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "azure-bases",
+              "titre": "Azure bases",
+              "titre_en": "Azure Basics",
+              "icon": "🔵",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "aws-bases",
+              "titre": "AWS bases",
+              "titre_en": "AWS Basics",
+              "icon": "🟠",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            }
+          ]
+        },
+        {
+          "id": "cloud-azure",
+          "titre": "Azure",
+          "titre_en": "Azure",
+          "modules": [
+            {
+              "id": "azure-ad",
+              "titre": "Azure AD",
+              "titre_en": "Azure Active Directory",
+              "icon": "🏢",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "azure-vm",
+              "titre": "Azure VM",
+              "titre_en": "Azure Virtual Machines",
+              "icon": "🖥️",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "azure-network",
+              "titre": "Azure Network",
+              "titre_en": "Azure Networking",
+              "icon": "🌐",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "azure-security",
+              "titre": "Azure Security",
+              "titre_en": "Azure Security",
+              "icon": "🔒",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            }
+          ]
+        },
+        {
+          "id": "cloud-aws",
+          "titre": "AWS",
+          "titre_en": "AWS",
+          "modules": [
+            {
+              "id": "aws-ec2",
+              "titre": "EC2",
+              "titre_en": "EC2",
+              "icon": "🖥️",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "aws-s3",
+              "titre": "S3",
+              "titre_en": "S3",
+              "icon": "🪣",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "aws-iam",
+              "titre": "IAM",
+              "titre_en": "IAM",
+              "icon": "🔑",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "aws-vpc",
+              "titre": "VPC",
+              "titre_en": "VPC",
+              "icon": "🌐",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "aws-cloudwatch",
+              "titre": "CloudWatch",
+              "titre_en": "CloudWatch",
+              "icon": "👁️",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cert-ccna",
+      "titre": "CCNA",
+      "titre_en": "CCNA",
+      "description": "Préparez la certification Cisco CCNA 200-301. Maîtrisez les fondamentaux du réseau Cisco.",
+      "description_en": "Prepare for the Cisco CCNA 200-301 certification. Master Cisco networking fundamentals.",
+      "couleur": "#1ABC9C",
+      "icon": "🏆",
+      "exam": {
+        "duration_min": 90,
+        "passing_score": 82,
+        "questions": [
+          {
+            "question": "Quelle commande affiche la table de routage sur un routeur Cisco ?",
+            "choices": ["show ip route", "show routes", "display ip routing", "get ip table"],
+            "correct": 0,
+            "domain": "IP Connectivity"
+          },
+          {
+            "question": "Quel protocole utilise le port 22 ?",
+            "choices": ["Telnet", "SSH", "HTTP", "FTP"],
+            "correct": 1,
+            "domain": "Network Fundamentals"
+          },
+          {
+            "question": "Quelle est la plage d'adresses IP privées de classe A ?",
+            "choices": ["10.0.0.0 - 10.255.255.255", "172.16.0.0 - 172.31.255.255", "192.168.0.0 - 192.168.255.255", "169.254.0.0 - 169.254.255.255"],
+            "correct": 0,
+            "domain": "Network Fundamentals"
+          },
+          {
+            "question": "Quel type de VLAN transporte le trafic de gestion du switch ?",
+            "choices": ["Data VLAN", "Voice VLAN", "Management VLAN", "Native VLAN"],
+            "correct": 2,
+            "domain": "Network Access"
+          },
+          {
+            "question": "Quel protocole de couche 2 est utilisé pour éviter les boucles dans un réseau commuté ?",
+            "choices": ["OSPF", "STP", "RIP", "EIGRP"],
+            "correct": 1,
+            "domain": "Network Access"
+          },
+          {
+            "question": "Quelle est la distance administrative par défaut d'une route OSPF ?",
+            "choices": ["90", "100", "110", "120"],
+            "correct": 2,
+            "domain": "IP Connectivity"
+          },
+          {
+            "question": "Quel masque de sous-réseau correspond à un /24 ?",
+            "choices": ["255.255.0.0", "255.255.255.0", "255.255.255.128", "255.255.255.252"],
+            "correct": 1,
+            "domain": "Network Fundamentals"
+          },
+          {
+            "question": "Quel type de NAT mappe une adresse privée à une adresse publique de manière permanente ?",
+            "choices": ["NAT dynamique", "NAT statique", "PAT", "NAT overload"],
+            "correct": 1,
+            "domain": "IP Connectivity"
+          },
+          {
+            "question": "Quelle commande configure une interface en mode trunk sur un switch Cisco ?",
+            "choices": ["switchport mode access", "switchport mode trunk", "switchport trunk enable", "interface trunk"],
+            "correct": 1,
+            "domain": "Network Access"
+          },
+          {
+            "question": "Quel protocole est utilisé pour la découverte automatique des voisins Cisco ?",
+            "choices": ["SNMP", "CDP", "LLDP", "ARP"],
+            "correct": 1,
+            "domain": "Network Fundamentals"
+          }
+        ]
+      },
+      "etapes": [
+        {
+          "id": "ccna-network-fundamentals",
+          "titre": "Network Fundamentals",
+          "titre_en": "Network Fundamentals",
+          "modules": [
+            {
+              "id": "ccna-osi-tcpip",
+              "titre": "Modèles OSI et TCP/IP",
+              "titre_en": "OSI and TCP/IP Models",
+              "icon": "📶",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "ccna-ipv4-ipv6",
+              "titre": "IPv4 et IPv6",
+              "titre_en": "IPv4 and IPv6",
+              "icon": "🔢",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "ccna-subnetting",
+              "titre": "Subnetting",
+              "titre_en": "Subnetting",
+              "icon": "✂️",
+              "niveaux": 5,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            }
+          ]
+        },
+        {
+          "id": "ccna-network-access",
+          "titre": "Network Access",
+          "titre_en": "Network Access",
+          "modules": [
+            {
+              "id": "ccna-vlans-trunking",
+              "titre": "VLANs et Trunking",
+              "titre_en": "VLANs and Trunking",
+              "icon": "🏷️",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "ccna-stp",
+              "titre": "Spanning Tree Protocol",
+              "titre_en": "Spanning Tree Protocol",
+              "icon": "🌳",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "ccna-etherchannel",
+              "titre": "EtherChannel",
+              "titre_en": "EtherChannel",
+              "icon": "🔗",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            }
+          ]
+        },
+        {
+          "id": "ccna-ip-connectivity",
+          "titre": "IP Connectivity",
+          "titre_en": "IP Connectivity",
+          "modules": [
+            {
+              "id": "ccna-routage-statique",
+              "titre": "Routage statique",
+              "titre_en": "Static Routing",
+              "icon": "🔀",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "ccna-ospf",
+              "titre": "OSPF",
+              "titre_en": "OSPF",
+              "icon": "🔄",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "ccna-nat",
+              "titre": "NAT/PAT",
+              "titre_en": "NAT/PAT",
+              "icon": "🔁",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            }
+          ]
+        },
+        {
+          "id": "ccna-security-fundamentals",
+          "titre": "Security Fundamentals",
+          "titre_en": "Security Fundamentals",
+          "modules": [
+            {
+              "id": "ccna-acl",
+              "titre": "Access Control Lists",
+              "titre_en": "Access Control Lists",
+              "icon": "📋",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "ccna-port-security",
+              "titre": "Port Security",
+              "titre_en": "Port Security",
+              "icon": "🔒",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cert-security-plus",
+      "titre": "CompTIA Security+",
+      "titre_en": "CompTIA Security+",
+      "description": "Préparez la certification CompTIA Security+ SY0-701. La certification de référence en cybersécurité.",
+      "description_en": "Prepare for the CompTIA Security+ SY0-701 certification. The reference cybersecurity certification.",
+      "couleur": "#1ABC9C",
+      "icon": "🏆",
+      "exam": {
+        "duration_min": 90,
+        "passing_score": 82,
+        "questions": [
+          {
+            "question": "Quel type d'attaque exploite la confiance d'un utilisateur pour obtenir des informations sensibles ?",
+            "choices": ["DDoS", "Social Engineering", "SQL Injection", "Buffer Overflow"],
+            "correct": 1,
+            "domain": "Threats, Vulnerabilities, and Mitigations"
+          },
+          {
+            "question": "Quel protocole assure le chiffrement des emails en transit ?",
+            "choices": ["SMTP", "POP3", "S/MIME", "IMAP"],
+            "correct": 2,
+            "domain": "Security Architecture"
+          },
+          {
+            "question": "Que signifie le 'A' dans la triade CIA ?",
+            "choices": ["Authentication", "Authorization", "Availability", "Accountability"],
+            "correct": 2,
+            "domain": "General Security Concepts"
+          },
+          {
+            "question": "Quel type de malware se propage automatiquement sans intervention humaine ?",
+            "choices": ["Virus", "Worm", "Trojan", "Spyware"],
+            "correct": 1,
+            "domain": "Threats, Vulnerabilities, and Mitigations"
+          },
+          {
+            "question": "Quelle méthode d'authentification utilise quelque chose que vous êtes ?",
+            "choices": ["Mot de passe", "Token", "Biométrie", "Certificat"],
+            "correct": 2,
+            "domain": "General Security Concepts"
+          },
+          {
+            "question": "Quel outil est utilisé pour scanner les vulnérabilités d'un réseau ?",
+            "choices": ["Wireshark", "Nessus", "Netcat", "John the Ripper"],
+            "correct": 1,
+            "domain": "Security Operations"
+          },
+          {
+            "question": "Quel type de chiffrement utilise la même clé pour chiffrer et déchiffrer ?",
+            "choices": ["Asymétrique", "Symétrique", "Hashing", "Stéganographie"],
+            "correct": 1,
+            "domain": "General Security Concepts"
+          },
+          {
+            "question": "Que fait un IPS qu'un IDS ne fait pas ?",
+            "choices": ["Détecter les intrusions", "Alerter l'administrateur", "Bloquer le trafic malveillant", "Journaliser les événements"],
+            "correct": 2,
+            "domain": "Security Architecture"
+          },
+          {
+            "question": "Quel framework est couramment utilisé pour la gestion des incidents de sécurité ?",
+            "choices": ["OWASP", "NIST", "COBIT", "ITIL"],
+            "correct": 1,
+            "domain": "Security Operations"
+          },
+          {
+            "question": "Quelle attaque consiste à injecter du code malveillant dans un site web vu par d'autres utilisateurs ?",
+            "choices": ["SQL Injection", "XSS", "CSRF", "LDAP Injection"],
+            "correct": 1,
+            "domain": "Threats, Vulnerabilities, and Mitigations"
+          }
+        ]
+      },
+      "etapes": [
+        {
+          "id": "secplus-concepts",
+          "titre": "Concepts de sécurité",
+          "titre_en": "Security Concepts",
+          "modules": [
+            {
+              "id": "secplus-cia",
+              "titre": "Triade CIA et concepts",
+              "titre_en": "CIA Triad and Concepts",
+              "icon": "🔺",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "secplus-crypto",
+              "titre": "Cryptographie",
+              "titre_en": "Cryptography",
+              "icon": "🔏",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "secplus-identity",
+              "titre": "Identité et accès",
+              "titre_en": "Identity and Access",
+              "icon": "🪪",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            }
+          ]
+        },
+        {
+          "id": "secplus-threats",
+          "titre": "Menaces et vulnérabilités",
+          "titre_en": "Threats and Vulnerabilities",
+          "modules": [
+            {
+              "id": "secplus-malware",
+              "titre": "Malwares et attaques",
+              "titre_en": "Malware and Attacks",
+              "icon": "🦠",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "secplus-social-engineering",
+              "titre": "Ingénierie sociale",
+              "titre_en": "Social Engineering",
+              "icon": "🎭",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "secplus-app-attacks",
+              "titre": "Attaques applicatives",
+              "titre_en": "Application Attacks",
+              "icon": "💉",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            }
+          ]
+        },
+        {
+          "id": "secplus-operations",
+          "titre": "Opérations de sécurité",
+          "titre_en": "Security Operations",
+          "modules": [
+            {
+              "id": "secplus-incident-response",
+              "titre": "Réponse aux incidents",
+              "titre_en": "Incident Response",
+              "icon": "🚒",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "secplus-monitoring",
+              "titre": "Surveillance et SIEM",
+              "titre_en": "Monitoring and SIEM",
+              "icon": "📊",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cert-network-plus",
+      "titre": "CompTIA Network+",
+      "titre_en": "CompTIA Network+",
+      "description": "Préparez la certification CompTIA Network+ N10-009. Validez vos compétences réseau fondamentales.",
+      "description_en": "Prepare for the CompTIA Network+ N10-009 certification. Validate your fundamental networking skills.",
+      "couleur": "#1ABC9C",
+      "icon": "🏆",
+      "exam": {
+        "duration_min": 90,
+        "passing_score": 82,
+        "questions": [
+          {
+            "question": "Quel type de câble est le plus résistant aux interférences électromagnétiques ?",
+            "choices": ["UTP Cat5e", "STP Cat6", "Fibre optique", "Coaxial"],
+            "correct": 2,
+            "domain": "Networking Fundamentals"
+          },
+          {
+            "question": "Quel protocole de routage utilise le concept d'aire (area) ?",
+            "choices": ["RIP", "EIGRP", "OSPF", "BGP"],
+            "correct": 2,
+            "domain": "Networking Fundamentals"
+          },
+          {
+            "question": "Quel est le débit maximum du Wi-Fi 6 (802.11ax) ?",
+            "choices": ["1.3 Gbps", "3.5 Gbps", "9.6 Gbps", "46 Gbps"],
+            "correct": 2,
+            "domain": "Networking Fundamentals"
+          },
+          {
+            "question": "Quel outil en ligne de commande permet de tester la résolution DNS ?",
+            "choices": ["ping", "tracert", "nslookup", "netstat"],
+            "correct": 2,
+            "domain": "Network Troubleshooting"
+          },
+          {
+            "question": "Quel protocole utilise le port 443 ?",
+            "choices": ["HTTP", "HTTPS", "SSH", "Telnet"],
+            "correct": 1,
+            "domain": "Networking Fundamentals"
+          },
+          {
+            "question": "Quelle topologie réseau offre la meilleure redondance ?",
+            "choices": ["Étoile", "Bus", "Anneau", "Maillée complète"],
+            "correct": 3,
+            "domain": "Networking Fundamentals"
+          },
+          {
+            "question": "Quel protocole est utilisé pour synchroniser l'heure sur un réseau ?",
+            "choices": ["SNMP", "NTP", "SMTP", "STP"],
+            "correct": 1,
+            "domain": "Network Services"
+          },
+          {
+            "question": "Quelle classe d'adresse IP a un premier octet entre 192 et 223 ?",
+            "choices": ["Classe A", "Classe B", "Classe C", "Classe D"],
+            "correct": 2,
+            "domain": "Networking Fundamentals"
+          },
+          {
+            "question": "Quel est l'objectif principal d'un load balancer ?",
+            "choices": ["Filtrer le trafic", "Distribuer le trafic entre serveurs", "Chiffrer les données", "Compresser les paquets"],
+            "correct": 1,
+            "domain": "Network Services"
+          },
+          {
+            "question": "Quel type de DNS record associe un nom de domaine à une adresse IPv4 ?",
+            "choices": ["AAAA", "CNAME", "A", "MX"],
+            "correct": 2,
+            "domain": "Network Services"
+          }
+        ]
+      },
+      "etapes": [
+        {
+          "id": "netplus-fundamentals",
+          "titre": "Fondamentaux réseau",
+          "titre_en": "Networking Fundamentals",
+          "modules": [
+            {
+              "id": "netplus-topologies",
+              "titre": "Topologies et modèles",
+              "titre_en": "Topologies and Models",
+              "icon": "🔗",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "netplus-cabling",
+              "titre": "Câblage et connectique",
+              "titre_en": "Cabling and Connectors",
+              "icon": "🔌",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "netplus-addressing",
+              "titre": "Adressage et routage",
+              "titre_en": "Addressing and Routing",
+              "icon": "🔢",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            }
+          ]
+        },
+        {
+          "id": "netplus-implementation",
+          "titre": "Implémentation",
+          "titre_en": "Implementation",
+          "modules": [
+            {
+              "id": "netplus-wireless",
+              "titre": "Réseaux sans fil",
+              "titre_en": "Wireless Networks",
+              "icon": "📡",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "netplus-services",
+              "titre": "Services réseau",
+              "titre_en": "Network Services",
+              "icon": "⚙️",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            }
+          ]
+        },
+        {
+          "id": "netplus-troubleshooting",
+          "titre": "Dépannage",
+          "titre_en": "Troubleshooting",
+          "modules": [
+            {
+              "id": "netplus-tools",
+              "titre": "Outils de dépannage",
+              "titre_en": "Troubleshooting Tools",
+              "icon": "🔧",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "netplus-methodology",
+              "titre": "Méthodologie de dépannage",
+              "titre_en": "Troubleshooting Methodology",
+              "icon": "🔍",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cert-az900",
+      "titre": "AZ-900",
+      "titre_en": "AZ-900 Azure Fundamentals",
+      "description": "Préparez la certification Microsoft AZ-900 Azure Fundamentals. Découvrez les concepts fondamentaux du cloud Azure.",
+      "description_en": "Prepare for the Microsoft AZ-900 Azure Fundamentals certification. Discover the fundamental concepts of Azure cloud.",
+      "couleur": "#1ABC9C",
+      "icon": "🏆",
+      "exam": {
+        "duration_min": 90,
+        "passing_score": 82,
+        "questions": [
+          {
+            "question": "Quel modèle cloud permet au client de gérer les applications mais pas l'infrastructure sous-jacente ?",
+            "choices": ["IaaS", "PaaS", "SaaS", "On-premises"],
+            "correct": 1,
+            "domain": "Cloud Concepts"
+          },
+          {
+            "question": "Quel service Azure est utilisé pour héberger des machines virtuelles ?",
+            "choices": ["Azure App Service", "Azure Virtual Machines", "Azure Functions", "Azure Container Instances"],
+            "correct": 1,
+            "domain": "Azure Architecture and Services"
+          },
+          {
+            "question": "Qu'est-ce qu'une Azure Region ?",
+            "choices": ["Un datacenter unique", "Un ensemble de datacenters dans une zone géographique", "Un abonnement Azure", "Un groupe de ressources"],
+            "correct": 1,
+            "domain": "Azure Architecture and Services"
+          },
+          {
+            "question": "Quel outil Azure permet de calculer les coûts estimés ?",
+            "choices": ["Azure Monitor", "Azure Pricing Calculator", "Azure Advisor", "Cost Management"],
+            "correct": 1,
+            "domain": "Azure Management and Governance"
+          },
+          {
+            "question": "Quel service Azure fournit une identité en tant que service ?",
+            "choices": ["Azure Firewall", "Azure Active Directory", "Azure Key Vault", "Azure DDoS Protection"],
+            "correct": 1,
+            "domain": "Azure Architecture and Services"
+          },
+          {
+            "question": "Quelle est la disponibilité garantie par un SLA Azure de 99.99% ?",
+            "choices": ["8.76 heures d'indisponibilité/an", "52.56 minutes d'indisponibilité/an", "5.26 minutes d'indisponibilité/an", "0 indisponibilité"],
+            "correct": 1,
+            "domain": "Cloud Concepts"
+          },
+          {
+            "question": "Quel concept Azure permet de regrouper logiquement des ressources ?",
+            "choices": ["Azure Region", "Resource Group", "Azure Subscription", "Management Group"],
+            "correct": 1,
+            "domain": "Azure Management and Governance"
+          },
+          {
+            "question": "Quel type de stockage Azure est optimisé pour les données non structurées ?",
+            "choices": ["Azure SQL Database", "Azure Blob Storage", "Azure Table Storage", "Azure Queue Storage"],
+            "correct": 1,
+            "domain": "Azure Architecture and Services"
+          },
+          {
+            "question": "Quel service Azure exécute du code sans gérer de serveur ?",
+            "choices": ["Azure VM", "Azure App Service", "Azure Functions", "Azure Kubernetes Service"],
+            "correct": 2,
+            "domain": "Azure Architecture and Services"
+          },
+          {
+            "question": "Quel principe du cloud permet d'augmenter les ressources en fonction de la demande ?",
+            "choices": ["High Availability", "Elasticity", "Disaster Recovery", "Fault Tolerance"],
+            "correct": 1,
+            "domain": "Cloud Concepts"
+          }
+        ]
+      },
+      "etapes": [
+        {
+          "id": "az900-cloud-concepts",
+          "titre": "Concepts Cloud",
+          "titre_en": "Cloud Concepts",
+          "modules": [
+            {
+              "id": "az900-cloud-models",
+              "titre": "Modèles cloud",
+              "titre_en": "Cloud Models",
+              "icon": "☁️",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "az900-benefits",
+              "titre": "Avantages du cloud",
+              "titre_en": "Cloud Benefits",
+              "icon": "✅",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "az900-service-types",
+              "titre": "Types de services",
+              "titre_en": "Service Types",
+              "icon": "📊",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            }
+          ]
+        },
+        {
+          "id": "az900-architecture",
+          "titre": "Architecture Azure",
+          "titre_en": "Azure Architecture",
+          "modules": [
+            {
+              "id": "az900-core-services",
+              "titre": "Services principaux",
+              "titre_en": "Core Services",
+              "icon": "🏗️",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "az900-networking",
+              "titre": "Réseau Azure",
+              "titre_en": "Azure Networking",
+              "icon": "🌐",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "az900-storage",
+              "titre": "Stockage Azure",
+              "titre_en": "Azure Storage",
+              "icon": "💾",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "az900-governance",
+              "titre": "Gouvernance et conformité",
+              "titre_en": "Governance and Compliance",
+              "icon": "📜",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cert-ceh",
+      "titre": "CEH",
+      "titre_en": "Certified Ethical Hacker",
+      "description": "Préparez la certification EC-Council CEH. Maîtrisez les techniques de hacking éthique et de test d'intrusion.",
+      "description_en": "Prepare for the EC-Council CEH certification. Master ethical hacking and penetration testing techniques.",
+      "couleur": "#1ABC9C",
+      "icon": "🏆",
+      "exam": {
+        "duration_min": 90,
+        "passing_score": 82,
+        "questions": [
+          {
+            "question": "Quelle est la première phase d'un test d'intrusion ?",
+            "choices": ["Scanning", "Gaining Access", "Reconnaissance", "Maintaining Access"],
+            "correct": 2,
+            "domain": "Introduction to Ethical Hacking"
+          },
+          {
+            "question": "Quel outil est principalement utilisé pour le scan de ports ?",
+            "choices": ["Wireshark", "Nmap", "Burp Suite", "John the Ripper"],
+            "correct": 1,
+            "domain": "Scanning Networks"
+          },
+          {
+            "question": "Qu'est-ce qu'un 'zero-day exploit' ?",
+            "choices": ["Un exploit vieux de zéro jour", "Un exploit pour une vulnérabilité non encore corrigée", "Un exploit qui prend zéro seconde", "Un exploit sans payload"],
+            "correct": 1,
+            "domain": "System Hacking"
+          },
+          {
+            "question": "Quel type d'attaque intercepte la communication entre deux parties ?",
+            "choices": ["DDoS", "Phishing", "Man-in-the-Middle", "SQL Injection"],
+            "correct": 2,
+            "domain": "Sniffing"
+          },
+          {
+            "question": "Quel outil est couramment utilisé pour cracker des mots de passe ?",
+            "choices": ["Nmap", "Metasploit", "Hashcat", "Wireshark"],
+            "correct": 2,
+            "domain": "System Hacking"
+          },
+          {
+            "question": "Que signifie le terme 'footprinting' en pentest ?",
+            "choices": ["Installer un backdoor", "Collecter des informations sur la cible", "Scanner les ports", "Exploiter une vulnérabilité"],
+            "correct": 1,
+            "domain": "Footprinting and Reconnaissance"
+          },
+          {
+            "question": "Quel protocole est vulnérable aux attaques de type ARP Spoofing ?",
+            "choices": ["TCP", "HTTP", "ARP", "DNS"],
+            "correct": 2,
+            "domain": "Sniffing"
+          },
+          {
+            "question": "Quel type de scan Nmap est considéré comme le plus furtif ?",
+            "choices": ["TCP Connect", "SYN Scan", "FIN Scan", "Xmas Scan"],
+            "correct": 1,
+            "domain": "Scanning Networks"
+          },
+          {
+            "question": "Qu'est-ce qu'un honeypot ?",
+            "choices": ["Un type de malware", "Un système leurre pour attirer les attaquants", "Un outil de chiffrement", "Un protocole de sécurité"],
+            "correct": 1,
+            "domain": "Evading IDS, Firewalls, and Honeypots"
+          },
+          {
+            "question": "Quelle attaque web exploite la confiance d'un site envers le navigateur de l'utilisateur ?",
+            "choices": ["XSS", "CSRF", "SQL Injection", "Directory Traversal"],
+            "correct": 1,
+            "domain": "Hacking Web Applications"
+          }
+        ]
+      },
+      "etapes": [
+        {
+          "id": "ceh-recon",
+          "titre": "Reconnaissance",
+          "titre_en": "Reconnaissance",
+          "modules": [
+            {
+              "id": "ceh-footprinting",
+              "titre": "Footprinting",
+              "titre_en": "Footprinting",
+              "icon": "👣",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "ceh-scanning",
+              "titre": "Scanning et énumération",
+              "titre_en": "Scanning and Enumeration",
+              "icon": "🔍",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            }
+          ]
+        },
+        {
+          "id": "ceh-exploitation",
+          "titre": "Exploitation",
+          "titre_en": "Exploitation",
+          "modules": [
+            {
+              "id": "ceh-system-hacking",
+              "titre": "System Hacking",
+              "titre_en": "System Hacking",
+              "icon": "💻",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "ceh-web-hacking",
+              "titre": "Web Application Hacking",
+              "titre_en": "Web Application Hacking",
+              "icon": "🌐",
+              "niveaux": 4,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            }
+          ]
+        },
+        {
+          "id": "ceh-network-attacks",
+          "titre": "Attaques réseau",
+          "titre_en": "Network Attacks",
+          "modules": [
+            {
+              "id": "ceh-sniffing",
+              "titre": "Sniffing",
+              "titre_en": "Sniffing",
+              "icon": "👃",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "ceh-dos",
+              "titre": "Déni de service",
+              "titre_en": "Denial of Service",
+              "icon": "💥",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "ceh-session-hijacking",
+              "titre": "Session Hijacking",
+              "titre_en": "Session Hijacking",
+              "icon": "🏴‍☠️",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            }
+          ]
+        },
+        {
+          "id": "ceh-advanced",
+          "titre": "Techniques avancées",
+          "titre_en": "Advanced Techniques",
+          "modules": [
+            {
+              "id": "ceh-evasion",
+              "titre": "Évasion IDS/Firewall",
+              "titre_en": "IDS/Firewall Evasion",
+              "icon": "🥷",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "ceh-cryptography",
+              "titre": "Cryptographie",
+              "titre_en": "Cryptography",
+              "icon": "🔐",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            },
+            {
+              "id": "ceh-social-engineering",
+              "titre": "Ingénierie sociale",
+              "titre_en": "Social Engineering",
+              "icon": "🎭",
+              "niveaux": 3,
+              "xp_par_niveau": 100,
+              "contenu": {}
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

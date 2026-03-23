@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}LearnPath{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        dark: { bg: '#0d1117', card: '#161b22', sidebar: '#0d1117', text: '#c9d1d9', muted: '#8b949e', border: '#30363d' },
+                        light: { bg: '#ffffff', card: '#f6f8fa', sidebar: '#f6f8fa', text: '#24292f', muted: '#57606a', border: '#d0d7de' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .sidebar-link { transition: all 0.2s; }
+        .sidebar-link:hover { transform: translateX(4px); }
+        .progress-bar { transition: width 0.5s ease; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        .dark ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
+        .light ::-webkit-scrollbar-thumb { background: #d0d7de; border-radius: 4px; }
+        .flip-card { perspective: 1000px; }
+        .flip-card-inner { transition: transform 0.6s; transform-style: preserve-3d; }
+        .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { backface-visibility: hidden; }
+        .flip-card-back { transform: rotateY(180deg); }
+    </style>
+</head>
+<body class="dark:bg-dark-bg bg-light-bg dark:text-dark-text text-light-text min-h-screen">
+
+<script>
+const LANG = {
+    fr: {
+        home: 'Accueil', roadmap: 'Roadmap', stats: 'Mes stats', settings: 'Paramètres',
+        parcours: 'PARCOURS', certifications: 'CERTIFICATIONS', level: 'Niveau',
+        xp: 'XP', etapes: 'étapes', modules: 'modules', start: 'Commencer',
+        continue_: 'Continuer', locked: 'Verrouillé', completed: 'Terminé',
+        cours: 'Cours', quiz: 'Quiz', flashcards: 'Flashcards', lab: 'Lab',
+        mark_read: 'Marquer comme lu', next: 'Suivant', previous: 'Précédent',
+        correct: 'Correct !', incorrect: 'Incorrect', explanation: 'Explication',
+        score: 'Score', retry: 'Recommencer', i_knew: 'Je savais ✓',
+        to_review: 'À revoir ✗', known: 'Connues', to_review_count: 'À revoir',
+        random_mode: 'Mode aléatoire', progress: 'Progression', total_xp: 'XP Total',
+        streak: 'Série', days: 'jours', exams: 'Examens blancs', duration: 'Durée',
+        minutes: 'min', submit: 'Valider', passed: 'RÉUSSI ✓', failed: 'ÉCHOUÉ ✗',
+        history: 'Historique', results_by_domain: 'Résultats par domaine',
+        logout: 'Déconnexion', dark_mode: 'Mode sombre', light_mode: 'Mode clair',
+        global_progress: 'Progression globale', completed_modules: 'Modules complétés',
+        exams_passed: 'Examens réussis',
+    },
+    en: {
+        home: 'Home', roadmap: 'Roadmap', stats: 'My stats', settings: 'Settings',
+        parcours: 'PATHS', certifications: 'CERTIFICATIONS', level: 'Level',
+        xp: 'XP', etapes: 'steps', modules: 'modules', start: 'Start',
+        continue_: 'Continue', locked: 'Locked', completed: 'Completed',
+        cours: 'Course', quiz: 'Quiz', flashcards: 'Flashcards', lab: 'Lab',
+        mark_read: 'Mark as read', next: 'Next', previous: 'Previous',
+        correct: 'Correct!', incorrect: 'Incorrect', explanation: 'Explanation',
+        score: 'Score', retry: 'Retry', i_knew: 'I knew ✓',
+        to_review: 'Review ✗', known: 'Known', to_review_count: 'To review',
+        random_mode: 'Random mode', progress: 'Progress', total_xp: 'Total XP',
+        streak: 'Streak', days: 'days', exams: 'Practice exams', duration: 'Duration',
+        minutes: 'min', submit: 'Submit', passed: 'PASSED ✓', failed: 'FAILED ✗',
+        history: 'History', results_by_domain: 'Results by domain',
+        logout: 'Logout', dark_mode: 'Dark mode', light_mode: 'Light mode',
+        global_progress: 'Global progress', completed_modules: 'Completed modules',
+        exams_passed: 'Exams passed',
+    }
+};
+
+let currentLang = localStorage.getItem('lp_lang') || 'fr';
+let currentTheme = localStorage.getItem('lp_theme') || 'dark';
+
+function t(key) { return LANG[currentLang][key] || key; }
+
+function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('lp_lang', lang);
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        el.textContent = t(el.dataset.i18n);
+    });
+    document.querySelectorAll('[data-i18n-field]').forEach(el => {
+        const field = el.dataset.i18nField;
+        const enField = el.dataset.i18nFieldEn;
+        if (lang === 'en' && enField && el.dataset[enField]) {
+            el.textContent = el.dataset[enField];
+        } else if (el.dataset[field]) {
+            el.textContent = el.dataset[field];
+        }
+    });
+}
+
+function toggleTheme() {
+    const html = document.documentElement;
+    if (currentTheme === 'dark') {
+        html.classList.remove('dark');
+        currentTheme = 'light';
+    } else {
+        html.classList.add('dark');
+        currentTheme = 'dark';
+    }
+    localStorage.setItem('lp_theme', currentTheme);
+    updateThemeBtn();
+}
+
+function updateThemeBtn() {
+    const btn = document.getElementById('theme-btn');
+    if (btn) btn.textContent = currentTheme === 'dark' ? '☀️ ' + t('light_mode') : '🌙 ' + t('dark_mode');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (currentTheme === 'light') document.documentElement.classList.remove('dark');
+    setLang(currentLang);
+    updateThemeBtn();
+    hljs.highlightAll();
+});
+</script>
+
+{% block body %}
+<div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-64 dark:bg-dark-sidebar bg-light-sidebar border-r dark:border-dark-border border-light-border flex flex-col fixed h-full z-10 max-lg:hidden">
+        <div class="p-6 border-b dark:border-dark-border border-light-border">
+            <h1 class="text-2xl font-bold">
+                <span class="text-blue-500">Learn</span><span class="dark:text-white text-gray-900">Path</span>
+            </h1>
+        </div>
+
+        <nav class="flex-1 p-4 space-y-1">
+            <a href="/roadmap" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg dark:hover:bg-dark-card hover:bg-light-card dark:text-dark-muted text-light-muted hover:text-blue-500 transition-colors">
+                <span>🗺️</span> <span data-i18n="roadmap">Roadmap</span>
+            </a>
+            <a href="/exams" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg dark:hover:bg-dark-card hover:bg-light-card dark:text-dark-muted text-light-muted hover:text-blue-500 transition-colors">
+                <span>📝</span> <span data-i18n="exams">Examens blancs</span>
+            </a>
+            <a href="/stats" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg dark:hover:bg-dark-card hover:bg-light-card dark:text-dark-muted text-light-muted hover:text-blue-500 transition-colors">
+                <span>📊</span> <span data-i18n="stats">Mes stats</span>
+            </a>
+        </nav>
+
+        <div class="p-4 border-t dark:border-dark-border border-light-border space-y-3">
+            <!-- XP & Level -->
+            <div class="px-4 py-3 dark:bg-dark-card bg-light-card rounded-lg">
+                <div class="flex justify-between text-sm mb-1">
+                    <span data-i18n="level">Niveau</span>
+                    <span class="font-bold text-blue-500">{{ level|default(1) }}</span>
+                </div>
+                <div class="flex justify-between text-sm mb-2">
+                    <span data-i18n="total_xp">XP Total</span>
+                    <span class="font-bold text-yellow-500">{{ total_xp|default(0) }}</span>
+                </div>
+                <div class="w-full h-2 dark:bg-dark-border bg-gray-200 rounded-full overflow-hidden">
+                    <div class="h-full bg-blue-500 rounded-full progress-bar" style="width: {{ ((total_xp|default(0)) % 500) / 5 }}%"></div>
+                </div>
+            </div>
+
+            <!-- Lang toggle -->
+            <div class="flex gap-2 px-4">
+                <button onclick="setLang('fr')" class="flex-1 py-1.5 rounded text-sm font-medium transition-colors" id="lang-fr"
+                    :class="currentLang==='fr' ? 'bg-blue-500 text-white' : 'dark:bg-dark-card bg-light-card'">FR</button>
+                <button onclick="setLang('en')" class="flex-1 py-1.5 rounded text-sm font-medium transition-colors" id="lang-en">EN</button>
+            </div>
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    const updateLangBtns = () => {
+                        const fr = document.getElementById('lang-fr');
+                        const en = document.getElementById('lang-en');
+                        if (currentLang === 'fr') {
+                            fr.className = 'flex-1 py-1.5 rounded text-sm font-medium bg-blue-500 text-white';
+                            en.className = 'flex-1 py-1.5 rounded text-sm font-medium dark:bg-dark-card bg-light-card dark:text-dark-muted text-light-muted';
+                        } else {
+                            en.className = 'flex-1 py-1.5 rounded text-sm font-medium bg-blue-500 text-white';
+                            fr.className = 'flex-1 py-1.5 rounded text-sm font-medium dark:bg-dark-card bg-light-card dark:text-dark-muted text-light-muted';
+                        }
+                    };
+                    updateLangBtns();
+                    const origSetLang = setLang;
+                    setLang = (lang) => { origSetLang(lang); updateLangBtns(); updateThemeBtn(); };
+                });
+            </script>
+
+            <!-- Theme toggle -->
+            <button onclick="toggleTheme()" id="theme-btn" class="w-full px-4 py-2 text-sm dark:text-dark-muted text-light-muted dark:hover:text-white hover:text-gray-900 text-left rounded-lg dark:hover:bg-dark-card hover:bg-light-card transition-colors">
+                ☀️ Mode clair
+            </button>
+
+            <!-- Logout -->
+            <a href="/logout" class="block px-4 py-2 text-sm dark:text-dark-muted text-light-muted dark:hover:text-red-400 hover:text-red-500 rounded-lg dark:hover:bg-dark-card hover:bg-light-card transition-colors">
+                🚪 <span data-i18n="logout">Déconnexion</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Mobile header -->
+    <div class="lg:hidden fixed top-0 left-0 right-0 z-20 dark:bg-dark-sidebar bg-light-sidebar border-b dark:border-dark-border border-light-border px-4 py-3 flex items-center justify-between">
+        <h1 class="text-xl font-bold"><span class="text-blue-500">Learn</span>Path</h1>
+        <button onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="p-2">☰</button>
+    </div>
+    <div id="mobile-menu" class="lg:hidden fixed inset-0 z-30 bg-black/50 hidden" onclick="this.classList.add('hidden')">
+        <div class="w-64 h-full dark:bg-dark-sidebar bg-light-sidebar p-4 space-y-2" onclick="event.stopPropagation()">
+            <a href="/roadmap" class="block px-4 py-2 rounded-lg dark:hover:bg-dark-card hover:bg-light-card">🗺️ <span data-i18n="roadmap">Roadmap</span></a>
+            <a href="/exams" class="block px-4 py-2 rounded-lg dark:hover:bg-dark-card hover:bg-light-card">📝 <span data-i18n="exams">Examens</span></a>
+            <a href="/stats" class="block px-4 py-2 rounded-lg dark:hover:bg-dark-card hover:bg-light-card">📊 <span data-i18n="stats">Stats</span></a>
+            <hr class="dark:border-dark-border border-light-border">
+            <button onclick="toggleTheme()" class="w-full text-left px-4 py-2 rounded-lg dark:hover:bg-dark-card hover:bg-light-card text-sm">🌓 Theme</button>
+            <div class="flex gap-2 px-4">
+                <button onclick="setLang('fr')" class="flex-1 py-1 rounded text-sm bg-blue-500 text-white">FR</button>
+                <button onclick="setLang('en')" class="flex-1 py-1 rounded text-sm dark:bg-dark-card bg-light-card">EN</button>
+            </div>
+            <a href="/logout" class="block px-4 py-2 text-red-400 rounded-lg">🚪 <span data-i18n="logout">Déconnexion</span></a>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <main class="flex-1 lg:ml-64 p-6 lg:p-10 max-lg:pt-16">
+        {% block content %}{% endblock %}
+    </main>
+</div>
+{% endblock %}
+
+</body>
+</html>

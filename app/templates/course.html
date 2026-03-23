@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}LearnPath - {{ module.titre }} - Cours{% endblock %}
+{% block content %}
+
+<div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="mb-6">
+        <a href="/parcours/{{ parcours.id }}/module/{{ module.id }}" class="text-sm dark:text-dark-muted text-light-muted hover:text-blue-500 mb-4 inline-block">
+            &larr; {{ module.titre }} - <span data-i18n="level">Niveau</span> {{ niveau }}
+        </a>
+        <div class="flex items-center gap-3">
+            <span class="text-2xl">📖</span>
+            <h2 class="text-2xl font-bold" data-i18n="cours">Cours</h2>
+        </div>
+    </div>
+
+    <!-- Reading progress bar -->
+    <div class="fixed top-0 left-0 right-0 h-1 z-50">
+        <div id="read-progress" class="h-full bg-blue-500 transition-all duration-150" style="width: 0%"></div>
+    </div>
+
+    <!-- Course content -->
+    <div id="course-content" class="dark:bg-dark-card bg-light-card rounded-xl p-8 border dark:border-dark-border border-light-border prose dark:prose-invert max-w-none
+        prose-headings:text-blue-400 prose-a:text-blue-400 prose-code:text-green-400
+        prose-pre:bg-[#0d1117] prose-pre:border prose-pre:border-[#30363d] prose-pre:rounded-lg">
+        {{ cours_html|safe }}
+    </div>
+
+    <!-- Mark as read button -->
+    <div class="mt-6 flex justify-center">
+        <button id="mark-read-btn" onclick="markAsRead()"
+            class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl transition-colors text-lg">
+            <span data-i18n="mark_read">Marquer comme lu</span> ✓
+        </button>
+    </div>
+</div>
+
+<script>
+// Reading progress
+const content = document.getElementById('course-content');
+window.addEventListener('scroll', () => {
+    const winH = window.innerHeight;
+    const docH = document.documentElement.scrollHeight;
+    const scrolled = window.scrollY;
+    const pct = Math.min(100, (scrolled / (docH - winH)) * 100);
+    document.getElementById('read-progress').style.width = pct + '%';
+});
+
+function markAsRead() {
+    const btn = document.getElementById('mark-read-btn');
+    btn.disabled = true;
+    btn.textContent = '...';
+
+    fetch('/api/parcours/{{ parcours.id }}/module/{{ module.id }}/cours/{{ niveau }}/complete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            btn.className = 'px-8 py-3 bg-green-600 text-white font-medium rounded-xl text-lg cursor-default';
+            btn.innerHTML = t('completed') + ' ✓ (+' + data.xp + ' XP)';
+        }
+    })
+    .catch(() => {
+        btn.disabled = false;
+        btn.textContent = t('mark_read') + ' ✓';
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());
+</script>
+
+{% endblock %}

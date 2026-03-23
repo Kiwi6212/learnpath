@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}LearnPath - {{ module.titre }}{% endblock %}
+{% block content %}
+
+<div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+        <a href="/parcours/{{ parcours.id }}" class="text-sm dark:text-dark-muted text-light-muted hover:text-blue-500 mb-4 inline-block">&larr; {{ parcours.titre }}</a>
+        <div class="flex items-center gap-4 mb-4">
+            <span class="text-4xl">{{ module.icon }}</span>
+            <div>
+                <h2 class="text-3xl font-bold dark:text-white text-gray-900">
+                    <span class="lang-fr">{{ module.titre }}</span>
+                    <span class="lang-en hidden">{{ module.titre_en|default(module.titre) }}</span>
+                </h2>
+                <p class="dark:text-dark-muted text-light-muted mt-1">
+                    {{ niveau_actuel }} / {{ module.niveaux }} <span data-i18n="level">niveaux</span>
+                    &middot; {{ xp_earned }} XP
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Niveaux -->
+    <div class="space-y-4">
+        {% for niv in niveaux %}
+        <div class="dark:bg-dark-card bg-light-card rounded-xl p-6 border dark:border-dark-border border-light-border
+            {% if not niv.unlocked %}opacity-40{% endif %}
+            {% if niv.completed %}ring-2 ring-green-500/30{% endif %}">
+
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold
+                        {% if niv.completed %}bg-green-500 text-white
+                        {% elif niv.unlocked %}text-white{% else %}dark:bg-dark-border bg-gray-200 dark:text-dark-muted text-light-muted{% endif %}"
+                        {% if niv.unlocked and not niv.completed %}style="background-color: {{ parcours.couleur }}"{% endif %}>
+                        {% if niv.completed %}✓{% elif niv.unlocked %}{{ niv.numero }}{% else %}🔒{% endif %}
+                    </div>
+                    <h3 class="text-xl font-semibold">
+                        <span data-i18n="level">Niveau</span> {{ niv.numero }}
+                    </h3>
+                </div>
+                {% if niv.completed %}
+                <span class="text-green-500 text-sm font-medium" data-i18n="completed">Terminé</span>
+                {% endif %}
+            </div>
+
+            {% if niv.unlocked %}
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <a href="/parcours/{{ parcours.id }}/module/{{ module.id }}/cours/{{ niv.numero }}"
+                   class="flex items-center gap-2 px-4 py-3 rounded-lg dark:bg-dark-bg bg-white border dark:border-dark-border border-light-border hover:border-blue-500 transition-colors">
+                    <span class="text-xl">📖</span>
+                    <span class="text-sm font-medium" data-i18n="cours">Cours</span>
+                </a>
+                <a href="/parcours/{{ parcours.id }}/module/{{ module.id }}/quiz/{{ niv.numero }}"
+                   class="flex items-center gap-2 px-4 py-3 rounded-lg dark:bg-dark-bg bg-white border dark:border-dark-border border-light-border hover:border-green-500 transition-colors">
+                    <span class="text-xl">✅</span>
+                    <span class="text-sm font-medium" data-i18n="quiz">Quiz</span>
+                </a>
+                <a href="/parcours/{{ parcours.id }}/module/{{ module.id }}/flashcards/{{ niv.numero }}"
+                   class="flex items-center gap-2 px-4 py-3 rounded-lg dark:bg-dark-bg bg-white border dark:border-dark-border border-light-border hover:border-purple-500 transition-colors">
+                    <span class="text-xl">🃏</span>
+                    <span class="text-sm font-medium" data-i18n="flashcards">Flashcards</span>
+                </a>
+                <a href="/parcours/{{ parcours.id }}/module/{{ module.id }}/lab/{{ niv.numero }}"
+                   class="flex items-center gap-2 px-4 py-3 rounded-lg dark:bg-dark-bg bg-white border dark:border-dark-border border-light-border hover:border-orange-500 transition-colors">
+                    <span class="text-xl">🔬</span>
+                    <span class="text-sm font-medium" data-i18n="lab">Lab</span>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const updateLangContent = () => {
+        document.querySelectorAll('.lang-fr').forEach(el => el.classList.toggle('hidden', currentLang !== 'fr'));
+        document.querySelectorAll('.lang-en').forEach(el => el.classList.toggle('hidden', currentLang !== 'en'));
+    };
+    updateLangContent();
+    const origSetLang4 = setLang;
+    setLang = (lang) => { origSetLang4(lang); updateLangContent(); };
+});
+</script>
+
+{% endblock %}

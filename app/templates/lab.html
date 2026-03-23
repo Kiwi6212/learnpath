@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% block title %}LearnPath - {{ module.titre }} - Lab{% endblock %}
+{% block content %}
+
+<div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <div class="mb-6">
+        <a href="/parcours/{{ parcours.id }}/module/{{ module.id }}" class="text-sm dark:text-dark-muted text-light-muted hover:text-blue-500 mb-4 inline-block">
+            &larr; {{ module.titre }} - <span data-i18n="level">Niveau</span> {{ niveau }}
+        </a>
+        <div class="flex items-center gap-3">
+            <span class="text-2xl">🔬</span>
+            <h2 class="text-2xl font-bold" data-i18n="lab">Lab</h2>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Instructions -->
+        <div class="dark:bg-dark-card bg-light-card rounded-xl p-6 border dark:border-dark-border border-light-border">
+            <h3 class="text-lg font-semibold mb-4">
+                <span class="lang-fr">{{ lab.titre|default('Lab pratique') }}</span>
+                <span class="lang-en hidden">{{ lab.titre_en|default('Practical Lab') }}</span>
+            </h3>
+            <div class="prose dark:prose-invert prose-sm max-w-none dark:text-dark-muted text-light-muted">
+                <span class="lang-fr">{{ lab.instructions|default('Tapez les commandes dans le terminal.')|safe }}</span>
+                <span class="lang-en hidden">{{ lab.instructions_en|default('Type the commands in the terminal.')|safe }}</span>
+            </div>
+            <div class="mt-6 space-y-2" id="cmd-list">
+                <!-- Filled by JS -->
+            </div>
+        </div>
+
+        <!-- Terminal -->
+        <div class="rounded-xl overflow-hidden border dark:border-dark-border border-light-border">
+            <div class="bg-[#1a1a2e] px-4 py-2 flex items-center gap-2 border-b border-[#30363d]">
+                <div class="flex gap-1.5">
+                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                </div>
+                <span class="text-sm text-gray-400 ml-2">Terminal</span>
+            </div>
+            <div id="terminal" class="bg-[#0a0a1a] p-4 h-96 overflow-y-auto font-mono text-sm" onclick="document.getElementById('term-input').focus()">
+                <div id="term-output"></div>
+                <div class="flex items-center text-green-400">
+                    <span class="text-green-500">user@learnpath</span><span class="text-gray-500">:</span><span class="text-blue-400">~</span><span class="text-gray-500">$ </span>
+                    <input id="term-input" type="text" class="flex-1 bg-transparent outline-none text-green-300 ml-1"
+                        onkeydown="if(event.key==='Enter')submitCommand()" autofocus>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const labCommands = {{ (lab.commands or [])|tojson }};
+let currentCmd = 0;
+let allCompleted = false;
+
+function renderCmdList() {
+    const list = document.getElementById('cmd-list');
+    list.innerHTML = '';
+    labCommands.forEach((cmd, i) => {
+        const isEn = currentLang === 'en';
+        const hint = isEn && cmd.hint_en ? cmd.hint_en : cmd.hint;
+        const div = document.createElement('div');
+        div.className = 'flex items-center gap-3 p-3 rounded-lg ' +
+            (i < currentCmd ? 'bg-green-500/10 border border-green-500/30' :
+             i === currentCmd ? 'bg-blue-500/10 border border-blue-500/30' :
+             'dark:bg-dark-bg bg-gray-50 border dark:border-dark-border border-light-border opacity-50');
+        div.innerHTML = `
+            <span class="text-lg">${i < currentCmd ? '✅' : i === currentCmd ? '👉' : '⬜'}</span>
+            <div>
+                <code class="text-sm font-mono ${i === currentCmd ? 'text-blue-400' : 'dark:text-dark-muted text-light-muted'}">${cmd.command}</code>
+                <p class="text-xs dark:text-dark-muted text-light-muted mt-0.5">${hint || ''}</p>
+            </div>`;
+        list.appendChild(div);
+    });
+}
+
+function appendOutput(html) {
+    const output = document.getElementById('term-output');
+    output.innerHTML += html;
+    document.getElementById('terminal').scrollTop = document.getElementById('terminal').scrollHeight;
+}
+
+function submitCommand() {
+    const input = document.getElementById('term-input');
+    const cmd = input.value.trim();
+    if (!cmd) return;
+    input.value = '';
+
+    appendOutput(`<div class="flex text-green-400 mb-1"><span class="text-green-500">user@learnpath</span><span class="text-gray-500">:</span><span class="text-blue-400">~</span><span class="text-gray-500">$ </span><span class="text-green-300 ml-1">${cmd}</span></div>`);
+
+    if (currentCmd >= labCommands.length) {
+        appendOutput('<div class="text-yellow-400 mb-2">Lab terminé ! Toutes les commandes ont été complétées.</div>');
+        return;
+    }
+
+    const expected = labCommands[currentCmd];
+    if (cmd === expected.command) {
+        const output = expected.expected_output || 'Command executed successfully.';
+        appendOutput(`<div class="text-gray-400 mb-1 whitespace-pre-wrap">${output}</div>`);
+        appendOutput('<div class="text-green-400 mb-2">✓ Correct !</div>');
+        currentCmd++;
+        renderCmdList();
+
+        if (currentCmd >= labCommands.length) {
+            allCompleted = true;
+            appendOutput('<div class="text-green-400 font-bold mb-2">🎉 Lab complété ! +50 XP</div>');
+            fetch('/api/parcours/{{ parcours.id }}/module/{{ module.id }}/lab/{{ niveau }}/complete', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' }
+            });
+        }
+    } else {
+        const isEn = currentLang === 'en';
+        const hint = isEn && expected.hint_en ? expected.hint_en : expected.hint;
+        appendOutput(`<div class="text-red-400 mb-1">✗ Commande incorrecte</div>`);
+        if (hint) appendOutput(`<div class="text-yellow-400/70 mb-2 text-xs">Indice: ${hint}</div>`);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (labCommands.length > 0) {
+        renderCmdList();
+        appendOutput('<div class="text-gray-500 mb-2">Bienvenue dans le lab ! Tapez les commandes ci-contre.</div>');
+    } else {
+        document.getElementById('term-output').innerHTML = '<div class="text-gray-500">Aucun lab disponible pour ce niveau.</div>';
+    }
+});
+</script>
+
+{% endblock %}
